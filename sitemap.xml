@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://xiaolong.li/2021/08/15/Redis-Persistence/</loc>
+    
+    <lastmod>2021-08-15T16:21:59.296Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaolong.li/2019/10/13/Introduction-to-JVM-Memory-Structure/</loc>
     
     <lastmod>2021-08-15T16:18:40.532Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>http://xiaolong.li/2021/01/18/internal-linux-mirrors-website/</loc>
     
     <lastmod>2021-08-15T16:16:16.960Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaolong.li/2021/08/15/Redis-Persistence/</loc>
-    
-    <lastmod>2021-08-15T16:14:08.774Z</lastmod>
     
   </url>
   
@@ -191,13 +191,6 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2019/10/23/Introduction-to-Garbage-Collection/</loc>
-    
-    <lastmod>2021-08-07T16:32:49.020Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://xiaolong.li/2020/03/04/Introduction-to-Dual-Center-for-Disaster-Recovery/</loc>
     
     <lastmod>2021-08-07T16:32:49.020Z</lastmod>
@@ -205,7 +198,28 @@
   </url>
   
   <url>
+    <loc>http://xiaolong.li/2019/10/23/Introduction-to-Garbage-Collection/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.020Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/09/26/CPU-loading-hight-exception/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaolong.li/2019/11/03/AWS-shadowsocks-guide/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
     
     <lastmod>2021-08-07T16:32:49.019Z</lastmod>
     
@@ -219,21 +233,7 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2019/09/26/CPU-loading-hight-exception/</loc>
-    
-    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://xiaolong.li/2020/03/02/How-to-cancel-streaming-gRPC-Send-from-server/</loc>
-    
-    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
     
     <lastmod>2021-08-07T16:32:49.019Z</lastmod>
     

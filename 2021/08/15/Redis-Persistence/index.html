@@ -93,7 +93,7 @@
 <meta property="og:image" content="http://xiaolong.li/images/redis/2021-08-15-bgsave-cmd.jpeg">
 <meta property="og:image" content="http://xiaolong.li/images/redis/2021-08-15-aof-persistence.jpeg">
 <meta property="og:image" content="http://xiaolong.li/images/redis/2021-08-15-aof-rewrite-file.jpeg">
-<meta property="og:updated_time" content="2021-08-15T16:14:08.774Z">
+<meta property="og:updated_time" content="2021-08-15T16:21:59.296Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis 持久化机制">
 <meta name="twitter:description" content="Redis 是一个内存数据库，数据保存在内存中，但是我们都知道内存的数据变化是很快的，也容易发生丢失。幸好 Redis 还为我们提供了持久化的机制，分别是 RDB(Redis DataBase) 和 AOF(Append Only File)。 持久化流程Redis 的数据持久化就是可以将数据保存在磁盘上，主要有下面五个过程：  （1）客户端向服务端发送写操作(数据在客户端的内存中)。 （2）数据">
@@ -473,16 +473,16 @@ daovoice('update');
 <p>（2）操作系统发生故障，必须上面 5 步都完成才可以。</p>
 </blockquote>
 <p>在这里只考虑了保存的过程可能发生的故障，其实保存的数据也有可能发生损坏，需要一定的恢复机制，不过在这里就不再延伸了。现在主要考虑的是 Redis 如何来实现上面 5 个保存磁盘的步骤。它提供了两种策略机制，也就是 RDB 和 AOF。</p>
-<h4 id="RDB机制"><a href="#RDB机制" class="headerlink" title="RDB机制"></a>RDB机制</h4><p>RDB 其实就是把数据以快照的形式保存在磁盘上。什么是快照呢? 你可以理解成把当前时刻的数据拍成一张照片保存下来。</p>
+<h4 id="RDB-机制"><a href="#RDB-机制" class="headerlink" title="RDB 机制"></a>RDB 机制</h4><p>RDB 其实就是把数据以快照的形式保存在磁盘上。什么是快照呢? 你可以理解成把当前时刻的数据拍成一张照片保存下来。</p>
 <p>RDB 持久化是指在指定的时间间隔内将内存中的数据集快照写入磁盘。也是默认的持久化方式，这种方式是就是将内存中数据以快照的方式写入到二进制文件中,默认的文件名为 dump.rdb。</p>
 <blockquote class="blockquote-center"><p>在安装了 Redis 之后，所有的配置都是在 redis.conf 文件中，里面保存了 RDB 和 AOF 两种持久化机制的各种配置</p>
 </blockquote>
 <p>既然 RDB 机制是通过把某个时刻的所有数据生成一个快照来保存，那么就应该有一种触发机制，是实现这个过程。对于 RDB 来说，提供了三种机制：save、bgsave、自动化。</p>
-<h5 id="save触发方式"><a href="#save触发方式" class="headerlink" title="save触发方式"></a>save触发方式</h5><p>该命令会阻塞当前 Redis 服务器，执行 save 命令期间，Redis 不能处理其他命令，直到 RDB 过程完成为止。具体流程如下：</p>
-<p><img src="/images/redis/2021-08-15-save-cmd.jpeg" alt="image"></p>
+<h5 id="save-触发方式"><a href="#save-触发方式" class="headerlink" title="save 触发方式"></a>save 触发方式</h5><p>该命令会阻塞当前 Redis 服务器，执行 save 命令期间，Redis 不能处理其他命令，直到 RDB 过程完成为止。具体流程如下：</p>
+<p><img src="/images/redis/2021-08-15-save-cmd.jpeg" alt="image" title="save命令"></p>
 <p>执行完成时候如果存在老的 RDB 文件，就把新的替代掉旧的。我们的客户端可能都是几万或者是几十万，这种方式显然不可取。</p>
-<h5 id="bgsave触发方式"><a href="#bgsave触发方式" class="headerlink" title="bgsave触发方式"></a>bgsave触发方式</h5><p>执行该命令时，Redis 会在后台异步进行快照操作，快照同时还可以响应客户端请求。具体流程如下：</p>
-<p><img src="/images/redis/2021-08-15-bgsave-cmd.jpeg" alt="image"></p>
+<h5 id="bgsave-触发方式"><a href="#bgsave-触发方式" class="headerlink" title="bgsave 触发方式"></a>bgsave 触发方式</h5><p>执行该命令时，Redis 会在后台异步进行快照操作，快照同时还可以响应客户端请求。具体流程如下：</p>
+<p><img src="/images/redis/2021-08-15-bgsave-cmd.jpeg" alt="image" title="bgsave命令"></p>
 <p>具体操作是 Redis 进程执行 fork 操作创建子进程，RDB 持久化过程由子进程负责，完成后自动结束。阻塞只发生在 fork 阶段，一般时间很短。基本上 Redis 内部所有的 RDB 操作都是采用 bgsave 命令。</p>
 <h5 id="自动触发"><a href="#自动触发" class="headerlink" title="自动触发"></a>自动触发</h5><p>自动触发是由配置文件来完成的。在 redis.conf 配置文件中，有如下配置可以设置：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&gt; 1、save：这里是用来配置触发 Redis的 RDB 持久化条件，也就是什么时候将内存中的数据保存到硬盘。比如“save m n”。表示m秒内数据集存在n次修改时，自动触发bgsave。</span><br><span class="line">默认如下配置：</span><br><span class="line"></span><br><span class="line">&apos;#&apos;  表示900 秒内如果至少有1个key的值发生变化，则保存save 900 </span><br><span class="line">&apos;1#&apos;  表示300 秒内如果至少有10个key的值变化，则保存save 300 </span><br><span class="line">&apos;10#&apos; 表示60 秒内如果至少有10000个key的值变化，则保存save 60 10000</span><br><span class="line"></span><br><span class="line">不需要持久化，那么你可以注释掉所有的 save 行来停用保存功能。</span><br><span class="line">&gt;</span><br><span class="line">&gt; 2、&apos;stop-writes-on-bgsave-error&apos;：默认值为yes。当启用了RDB且最后一次后台保存数据失败时，Redis是否停止接收数据，这会让用户意识到数据没有正确持久化到磁盘上，否则没有人会注意到灾难（disaster）发生了。如果Redis重启了，那么又可以重新开始接收数据了</span><br><span class="line">&gt;</span><br><span class="line">&gt; 3、&apos;rdbcompression&apos;：默认值是yes。对于存储到磁盘中的快照，可以设置是否进行压缩存储。</span><br><span class="line">&gt;</span><br><span class="line">&gt; 4、&apos;rdbchecksum&apos;：默认值是yes。在存储快照后，我们还可以让redis使用CRC64算法来进行数据校验，但是这样做会增加大约10%的性能消耗，如果希望获取到最大的性能提升，可以关闭此功能。</span><br><span class="line">&gt;</span><br><span class="line">&gt; 5、&apos;dbfilename&apos;：设置快照的文件名，默认是 dump.rdb</span><br><span class="line">&gt;</span><br><span class="line">&gt; 6、&apos;dir&apos;：设置快照文件的存放路径，这个配置项一定是个目录，而不能是文件名。</span><br></pre></td></tr></table></figure>
@@ -531,11 +531,11 @@ daovoice('update');
 </blockquote>
 <p><strong>劣势</strong>：</p>
 <p>RDB 快照是一次全量备份，存储的是内存数据的二进制序列化形式，存储上非常紧凑。当进行快照持久化时，会开启一个子进程专门负责快照持久化，子进程会拥有父进程的内存数据，父进程修改内存子进程不会反应出来，所以在快照持久化期间修改的数据不会被保存，可能丢失数据。</p>
-<h4 id="AOF机制"><a href="#AOF机制" class="headerlink" title="AOF机制"></a>AOF机制</h4><p>全量备份总是耗时的，提供一种更加高效的方式 AOF，工作机制很简单，Redis 会将每一个收到的写命令都通过 write 函数追加到文件中。通俗的理解就是日志记录。</p>
-<h5 id="持久化原理"><a href="#持久化原理" class="headerlink" title="持久化原理"></a>持久化原理</h5><p><img src="/images/redis/2021-08-15-aof-persistence.jpeg" alt="image"></p>
+<h4 id="AOF-机制"><a href="#AOF-机制" class="headerlink" title="AOF 机制"></a>AOF 机制</h4><p>全量备份总是耗时的，提供一种更加高效的方式 AOF，工作机制很简单，Redis 会将每一个收到的写命令都通过 write 函数追加到文件中。通俗的理解就是日志记录。</p>
+<h5 id="持久化原理"><a href="#持久化原理" class="headerlink" title="持久化原理"></a>持久化原理</h5><p><img src="/images/redis/2021-08-15-aof-persistence.jpeg" alt="image" title="AOF 运行原理"></p>
 <p>每当有一个写命令过来时，就直接保存在我们的 AOF 文件中。</p>
 <h5 id="文件重写原理"><a href="#文件重写原理" class="headerlink" title="文件重写原理"></a>文件重写原理</h5><p>AOF 的方式也同时带来了另一个问题。持久化文件会变的越来越大。为了压缩 aof 的持久化文件。Redis提供了 bgrewriteaof 命令。将内存中的数据以命令的方式保存到临时文件中，同时会 fork 出一条新进程来将文件重写。</p>
-<p><img src="/images/redis/2021-08-15-aof-rewrite-file.jpeg" alt="image"></p>
+<p><img src="/images/redis/2021-08-15-aof-rewrite-file.jpeg" alt="image" title="AOF文件重写原理"></p>
 <p>重写 aof 文件的操作，并没有读取旧的 aof 文件，而是将整个内存中的数据库内容用命令的方式重写了一个新的 aof 文件，这点和快照有点类似。</p>
 <h5 id="触发机制"><a href="#触发机制" class="headerlink" title="触发机制"></a>触发机制</h5><p>AOF 也有三种触发机制，always、everysec、和 no。</p>
 <blockquote>
@@ -859,7 +859,7 @@ daovoice('update');
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#持久化流程"><span class="nav-number">1.</span> <span class="nav-text">持久化流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB机制"><span class="nav-number">2.</span> <span class="nav-text">RDB机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#save触发方式"><span class="nav-number">2.1.</span> <span class="nav-text">save触发方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bgsave触发方式"><span class="nav-number">2.2.</span> <span class="nav-text">bgsave触发方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#自动触发"><span class="nav-number">2.3.</span> <span class="nav-text">自动触发</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB-的优势和劣势"><span class="nav-number">3.</span> <span class="nav-text">RDB 的优势和劣势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF机制"><span class="nav-number">4.</span> <span class="nav-text">AOF机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#持久化原理"><span class="nav-number">4.1.</span> <span class="nav-text">持久化原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#文件重写原理"><span class="nav-number">4.2.</span> <span class="nav-text">文件重写原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#触发机制"><span class="nav-number">4.3.</span> <span class="nav-text">触发机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF-的优势和劣势"><span class="nav-number">4.4.</span> <span class="nav-text">AOF 的优势和劣势</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB和AOF到底该如何选择"><span class="nav-number">5.</span> <span class="nav-text">RDB和AOF到底该如何选择</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#持久化流程"><span class="nav-number">1.</span> <span class="nav-text">持久化流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB-机制"><span class="nav-number">2.</span> <span class="nav-text">RDB 机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#save-触发方式"><span class="nav-number">2.1.</span> <span class="nav-text">save 触发方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#bgsave-触发方式"><span class="nav-number">2.2.</span> <span class="nav-text">bgsave 触发方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#自动触发"><span class="nav-number">2.3.</span> <span class="nav-text">自动触发</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB-的优势和劣势"><span class="nav-number">3.</span> <span class="nav-text">RDB 的优势和劣势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF-机制"><span class="nav-number">4.</span> <span class="nav-text">AOF 机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#持久化原理"><span class="nav-number">4.1.</span> <span class="nav-text">持久化原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#文件重写原理"><span class="nav-number">4.2.</span> <span class="nav-text">文件重写原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#触发机制"><span class="nav-number">4.3.</span> <span class="nav-text">触发机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF-的优势和劣势"><span class="nav-number">4.4.</span> <span class="nav-text">AOF 的优势和劣势</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB和AOF到底该如何选择"><span class="nav-number">5.</span> <span class="nav-text">RDB和AOF到底该如何选择</span></a></li></ol></div>
             
 
           </div>
