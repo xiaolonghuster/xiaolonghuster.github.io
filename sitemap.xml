@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://xiaolong.li/2019/10/13/Introduction-to-JVM-Memory-Structure/</loc>
+    
+    <lastmod>2021-08-15T16:18:40.532Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/01/18/internal-linux-mirrors-website/</loc>
+    
+    <lastmod>2021-08-15T16:16:16.960Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/08/15/Redis-Persistence/</loc>
+    
+    <lastmod>2021-08-15T16:14:08.774Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/08/12/Zookeeper-for-Registry/</loc>
+    
+    <lastmod>2021-08-12T08:10:07.691Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/08/12/Zookeeper-for-Message-queue/</loc>
+    
+    <lastmod>2021-08-12T08:09:53.270Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/08/12/Zookeeper-for-Load-balancing/</loc>
+    
+    <lastmod>2021-08-12T08:09:45.165Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/08/12/Zookeeper-for-Distributed-transaction/</loc>
+    
+    <lastmod>2021-08-12T08:09:36.933Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/08/12/Zookeeper-for-Configuration/</loc>
+    
+    <lastmod>2021-08-12T08:09:23.885Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/08/12/Zookeeper-for-Distributed-lock/</loc>
+    
+    <lastmod>2021-08-12T08:09:21.159Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/08/12/Introduction-RTP-RTCP-in-WebRTC/</loc>
+    
+    <lastmod>2021-08-12T07:42:04.617Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/tags/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.082Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/categories/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.025Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2020/11/11/Zookeeper-Cluster-building/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.024Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/about/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.024Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2017/06/09/TSDB-INFLUXDB-Notion/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.023Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2017/06/08/TSDB-Introduction/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.023Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/02/19/The-difference-between-forward-and-reverse-proxy/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.023Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2018/03/26/You-Do-Not-Know-Java_Integer/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.023Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2018/03/27/You-Do-Not-Know-Java_String-Stringbuffer-StringBuilder/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.023Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/09/27/OOM-error/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.022Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2017/06/17/TSDB-INFLUXDB-DBManagement/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.022Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2017/06/09/TSDB-INFLUXDB-Key-Features/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.022Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2020/10/21/Introduction-to-h264-frame/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.021Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2017/06/05/Introduction/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.021Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2020/11/11/Kafka-Cluster-building/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.021Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/09/18/Linux-cmd-fdisk/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.021Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/09/19/Mac-rm-cmd/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.021Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/10/23/Introduction-to-Garbage-Collection/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.020Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2020/03/04/Introduction-to-Dual-Center-for-Disaster-Recovery/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.020Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/11/03/AWS-shadowsocks-guide/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2020/02/13/Dockerfile-best-practices-for-golang-projects/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/09/26/CPU-loading-hight-exception/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2020/03/02/How-to-cancel-streaming-gRPC-Send-from-server/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2020/02/13/Introduction-docker-repository-setup/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.019Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/11/24/A-Solid-Guide-to-SOLID-Principles-in-Java/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.018Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/09/19/ARTS-week-001/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.018Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/10/01/ARTS-week-002/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.018Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/10/21/ARTS-week-003/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.018Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2019/11/09/ARTS-week-004/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.018Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/Project-Euler/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.018Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/ARTS-Notes/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.017Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/Project-Euler/001/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.017Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/Project-Euler/002/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.017Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/Project-Euler/about/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.017Z</lastmod>
+    
+  </url>
+  
+</urlset>

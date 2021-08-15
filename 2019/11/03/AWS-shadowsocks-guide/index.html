@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="shadowsocks,科学上网,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="NO WAY OUT | 无往不前" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="之前一直是使用 AWS+ss 的方式翻墙，昨天手一抖把 EC2 实例给销毁了，最近好像干了不少这样不过脑子的事。其实AWS有一年的免费使用期限，我的早就过了，所以趁着这次事情，干脆再薅一次羊毛，重新注册一个账户，这里记一下安装过程。  要使用 AWS 的免费服务器，你需要有一张带美元账户的信用卡。我之前是使用 Young 卡注册，这次换一张 visa 卡，绑定账户会扣除 1 美元作为验证，貌似后面">
+<meta name="keywords" content="shadowsocks,科学上网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="亚马逊 AWS 搭建 shadowsocks 科学上网">
+<meta property="og:url" content="http://xiaolong.li/2019/11/03/AWS-shadowsocks-guide/index.html">
+<meta property="og:site_name" content="NO WAY OUT | 无往不前">
+<meta property="og:description" content="之前一直是使用 AWS+ss 的方式翻墙，昨天手一抖把 EC2 实例给销毁了，最近好像干了不少这样不过脑子的事。其实AWS有一年的免费使用期限，我的早就过了，所以趁着这次事情，干脆再薅一次羊毛，重新注册一个账户，这里记一下安装过程。  要使用 AWS 的免费服务器，你需要有一张带美元账户的信用卡。我之前是使用 Young 卡注册，这次换一张 visa 卡，绑定账户会扣除 1 美元作为验证，貌似后面">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-location.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-select-system.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-network-security-group.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-download-pem.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-start-check.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-create-elastic-ip.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-relate-ip.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-relate-instance.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-ss-mobile-config.jpg">
+<meta property="og:updated_time" content="2021-08-07T16:32:49.019Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="亚马逊 AWS 搭建 shadowsocks 科学上网">
+<meta name="twitter:description" content="之前一直是使用 AWS+ss 的方式翻墙，昨天手一抖把 EC2 实例给销毁了，最近好像干了不少这样不过脑子的事。其实AWS有一年的免费使用期限，我的早就过了，所以趁着这次事情，干脆再薅一次羊毛，重新注册一个账户，这里记一下安装过程。  要使用 AWS 的免费服务器，你需要有一张带美元账户的信用卡。我之前是使用 Young 卡注册，这次换一张 visa 卡，绑定账户会扣除 1 美元作为验证，貌似后面">
+<meta name="twitter:image" content="http://xiaolong.li/images/skill/2019-11-05-aws-location.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'BWXHCKVW55',
+      apiKey: '895eb3c479eff03bc3df73aa58b0160c',
+      indexName: 'xiaolong_li',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"请输出关键信息","hits_empty":"未发现与 <strong>${query}</strong> 相关的文章","hits_stats":"${hits} 条结果被找到,耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://xiaolong.li/2019/11/03/AWS-shadowsocks-guide/">
+
+
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0875bb23.js","daovoice")
+daovoice('init', {
+  app_id: "0875bb23",
+  user_id: "NO_89757", // 必填: 该用户在您系统上的唯一ID
+  email: "xiaolonghuster@gmail.com", // 选填:  该用户在您系统上的主邮箱
+  name: "xiaolong", // 选填: 用户名
+  signed_up: 1449821660 // 选填: 用户的注册时间，用Unix时间戳表示
+});
+daovoice('update');
+</script>
+
+  <title>亚马逊 AWS 搭建 shadowsocks 科学上网 | NO WAY OUT | 无往不前</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <!-- <div style="float: right;">
+      <a href="https://github.com/xiaolonghuster" target="_blank"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    </div> -->
+
+    <a href="https://github.com/xiaolonghuster" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NO WAY OUT | 无往不前</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projecteuler">
+          <a href="/Project-Euler" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br>
+            
+            欧拉计划
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-artsnotes">
+          <a href="/ARTS-Notes" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-paper-plane"></i> <br>
+            
+            ARTS计划
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xiaolong.li/2019/11/03/AWS-shadowsocks-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/44128669">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NO WAY OUT | 无往不前">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">亚马逊 AWS 搭建 shadowsocks 科学上网</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-03T21:29:30+08:00">
+                2019-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技巧/" itemprop="url" rel="index">
+                    <span itemprop="name">技巧</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/03/AWS-shadowsocks-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/11/03/AWS-shadowsocks-guide/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/11/03/AWS-shadowsocks-guide/" class="leancloud_visitors" data-flag-title="亚马逊 AWS 搭建 shadowsocks 科学上网">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前一直是使用 AWS+ss 的方式翻墙，昨天手一抖把 EC2 实例给销毁了，最近好像干了不少这样不过脑子的事。其实AWS有一年的免费使用期限，我的早就过了，所以趁着这次事情，干脆再薅一次羊毛，重新注册一个账户，这里记一下安装过程。</p>
+<blockquote>
+<p>要使用 AWS 的免费服务器，你需要有一张带美元账户的信用卡。我之前是使用 Young 卡注册，这次换一张 visa 卡，绑定账户会扣除 1 美元作为验证，貌似后面会返还。EC2 机器的费用每月会以预授权的形式扣除。</p>
+</blockquote>
+<p>使用 ss 的原因也很简单，跨平台客户端多。</p>
+<a id="more"></a>
+<p>注册账号，绑定信用卡什么的就不说了。</p>
+<h4 id="创建实例"><a href="#创建实例" class="headerlink" title="创建实例"></a>创建实例</h4><h5 id="选择区域"><a href="#选择区域" class="headerlink" title="选择区域"></a>选择区域</h5><p>登录控制台，选择区域，这里根据自己的情况选择，我选择的是东京，你可以根据自己的情况选择。然后启动一个实例。</p>
+<p><img src="/images/skill/2019-11-05-aws-location.jpg" alt="image"></p>
+<h5 id="选择系统"><a href="#选择系统" class="headerlink" title="选择系统"></a>选择系统</h5><p>下一步是选择一个系统镜像，我家里使用的是 Ubuntu 18.04 ，这里也选择了 Ubuntu，也可以选择其他的，但是一定要注意选择 <strong> 符合免费条件的套餐 </strong> 的机器。</p>
+<p><img src="/images/skill/2019-11-05-aws-select-system.jpg" alt="image"></p>
+<h5 id="创建安全组"><a href="#创建安全组" class="headerlink" title="创建安全组"></a>创建安全组</h5><p>接下来的几步按默认来就行，安全组这个需要配置，否则无法远程登录，可以暴露一些如 22 端口和 shadowsocks 端口，为了方便，这里全部放行，通过系统内部的端口开关来控制。</p>
+<p><img src="/images/skill/2019-11-05-aws-network-security-group.jpg" alt="image"></p>
+<h5 id="启动实例"><a href="#启动实例" class="headerlink" title="启动实例"></a>启动实例</h5><p>启动实例之前一定要创建密钥对，这个是远程登录的必要条件，并且下载保存 [pem 文件]，一定保存好，丢了就无法在下载了。</p>
+<p><img src="/images/skill/2019-11-05-aws-download-pem.jpg" alt="image"></p>
+<p>接下来就启动实例。</p>
+<p><img src="/images/skill/2019-11-05-aws-start-check.jpg" alt="image"></p>
+<h5 id="配置弹性-IP"><a href="#配置弹性-IP" class="headerlink" title="配置弹性 IP"></a>配置弹性 IP</h5><p>由于重启之后机器的公有 IP 会变动，这样在使用 SS 的时候需要修改 IP ，为了保证 IP 不变，需要绑定一个弹性 IP 。</p>
+<p>首先分配一个新地址，然后关联上刚才创建的实例。</p>
+<p><img src="/images/skill/2019-11-05-aws-create-elastic-ip.jpg" alt="image"></p>
+<p><img src="/images/skill/2019-11-05-aws-relate-ip.jpg" alt="image"></p>
+<p><img src="/images/skill/2019-11-05-aws-relate-instance.jpg" alt="image"></p>
+<blockquote>
+<p>注意，单独的弹性IP是不在免费套餐内的，所以需要及时绑定一个实例，如果只是分配了弹性IP，很久没有绑定实例，很可能要付费。所以，没有关联实例的弹性 IP 一定要释放掉。<br>当实例关联弹性 IP 后，原来实例分配的公有 IP 被释放。</p>
+</blockquote>
+<h4 id="连接服务器"><a href="#连接服务器" class="headerlink" title="连接服务器"></a>连接服务器</h4><p>因为AWS强制远程登录必须要用密钥连接服务器，我的电脑是 Ubuntu ，我是可以直接使用命令行的。如果是 Windows ，官方推荐使用 PuTTY ，不过说实话，界面实在太丑了。这里推荐一款超棒跨平台的 SSH 软件 terminus 。</p>
+<blockquote>
+<p><a href="https://www.termius.com" target="_blank" rel="noopener">www.termius.com</a></p>
+</blockquote>
+<p>我这里使用命令行直接登录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i AWS-Key-191102.pem ubuntu@ec2-52-198-88-251.ap-northeast-1.compute.amazonaws.com</span><br></pre></td></tr></table></figure>
+<h4 id="安装代理服务"><a href="#安装代理服务" class="headerlink" title="安装代理服务"></a>安装代理服务</h4><h5 id="安装-SHADOWSOCKS"><a href="#安装-SHADOWSOCKS" class="headerlink" title="安装 SHADOWSOCKS"></a>安装 SHADOWSOCKS</h5><p>这里以 Ubuntu 为例讲解安装 SS 的过程，如我的登录命令一样，当前使用的是 ubuntu 用户，因为是使用 pem 密钥对登录的，在使用 sudo 命令时不需要输入密码。使用以下命令安装 SS 。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install python-pip</span><br><span class="line">pip install shadowsocks</span><br></pre></td></tr></table></figure>
+<p>安装过程中会提示下载软件等信息提示，输入 Y 确认即可。</p>
+<h5 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h5><p>在 /etc/ 目录下新建配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/shadowsocks.json</span><br></pre></td></tr></table></figure>
+<p>复制下列的配置文件:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"server"</span>:<span class="string">"0.0.0.0"</span>,</span><br><span class="line">    <span class="attr">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</span><br><span class="line">    <span class="attr">"local_port"</span>:<span class="number">1080</span>,</span><br><span class="line">    <span class="attr">"port_password"</span>:&#123;</span><br><span class="line">      <span class="attr">"8388"</span>:<span class="string">"your_port_password"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"timeout"</span>:<span class="number">300</span>,</span><br><span class="line">    <span class="attr">"method"</span>:<span class="string">"bf-cfb"</span>,</span><br><span class="line">    <span class="attr">"fast_open"</span>: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置以下你的端口和密码即可，<strong> 一定确保端口已开放 </strong> ,上面配置网络组的时候已经允许了所有端口进入。</p>
+<p>这里关于加密方式要说一下，因为加密方式对于网络延时还是有一定影响的。翻墙不稳定，可能是加密方式的特征被识别，从而被干扰，也需要更换加密方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rc4-md5 加解密速度快，但是加密强度不够大，容易被干扰</span><br><span class="line">aes-256-cfb 加密强度大些，一样可能被干扰</span><br></pre></td></tr></table></figure>
+<p>无论哪一种加密方式，只要使用的人多了，就可能被重点研究，从而受到干扰，有人推荐 chacha20 或者 salsa20 ，没有试过。其实 bf-cfb 就很好，速度很快，官方的 shadowsocks-libev 及本教程预编译的翻墙固件都直接支持。</p>
+<p>如果你没有开放端口的话，需要防火墙将端口放开出来。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ufw allow 8388</span><br></pre></td></tr></table></figure>
+<h5 id="开启服务"><a href="#开启服务" class="headerlink" title="开启服务"></a>开启服务</h5><p>使用命令开启</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d start</span><br></pre></td></tr></table></figure>
+<p>查看开启，输入以下命令，如果有输出启动命令，则说明服务已开启。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps axu | grep ssserver | grep -v grep</span><br></pre></td></tr></table></figure>
+<p>停止服务，直接 kill 进程号，或者使用如下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d stop</span><br></pre></td></tr></table></figure>
+<h4 id="使用客户端连接"><a href="#使用客户端连接" class="headerlink" title="使用客户端连接"></a>使用客户端连接</h4><p>安装好了，配置好了，接下来就应该下载客户端开始使用了。</p>
+<blockquote>
+<p><a href="https://shadowsocks.org/en/download/clients.html" target="_blank" rel="noopener">shadowsocks官方网站</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://github.com/shadowsocks" target="_blank" rel="noopener">shadowsocks 官方 Github</a></p>
+</blockquote>
+<h5 id="配置客户端"><a href="#配置客户端" class="headerlink" title="配置客户端"></a>配置客户端</h5><p>在安卓客户端上的配置如下：</p>
+<p><img src="/images/skill/2019-11-05-aws-ss-mobile-config.jpg" alt="image"></p>
+<p>配置上 <strong> 服务器地址 端口 密码 加密方式 </strong> 四个参数即可。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">----------本文结束<i class="fa fa-paw"></i>感谢您的阅读----------</div>
+    
+</div>
+
+      </div>
+    
+
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/third_part/wechat_qrcode_for_yileshuo.jpg" alt="xiaolong wechat" style="width: 200px; max-width: 100%;">
+    <div>一只程序猿对世界的不完全理解</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/shadowsocks/" rel="tag"># shadowsocks</a>
+          
+            <a href="/tags/科学上网/" rel="tag"># 科学上网</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/23/Introduction-to-Garbage-Collection/" rel="next" title="垃圾收集概述">
+                <i class="fa fa-chevron-left"></i> 垃圾收集概述
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/09/ARTS-week-004/" rel="prev" title="ARTS-week-004 Have a nice day">
+                ARTS-week-004 Have a nice day <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+<div class="addthis_inline_share_toolbox">
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d917cdcae8a3a18" async="async"></script>
+</div>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/44128669" alt="xiaolong">
+            
+              <p class="site-author-name" itemprop="name">xiaolong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaolonghuster" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/xiaolonghuster" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/645582316" target="_blank" title="weibo">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://www.linkedin.com/in/xiaolong-li-981b27a1" target="_blank" title="LinkedIn">
+                      
+                        <i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建实例"><span class="nav-number">1.</span> <span class="nav-text">创建实例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#选择区域"><span class="nav-number">1.1.</span> <span class="nav-text">选择区域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#选择系统"><span class="nav-number">1.2.</span> <span class="nav-text">选择系统</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建安全组"><span class="nav-number">1.3.</span> <span class="nav-text">创建安全组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#启动实例"><span class="nav-number">1.4.</span> <span class="nav-text">启动实例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#配置弹性-IP"><span class="nav-number">1.5.</span> <span class="nav-text">配置弹性 IP</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接服务器"><span class="nav-number">2.</span> <span class="nav-text">连接服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装代理服务"><span class="nav-number">3.</span> <span class="nav-text">安装代理服务</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装-SHADOWSOCKS"><span class="nav-number">3.1.</span> <span class="nav-text">安装 SHADOWSOCKS</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#配置"><span class="nav-number">3.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#开启服务"><span class="nav-number">3.3.</span> <span class="nav-text">开启服务</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用客户端连接"><span class="nav-number">4.</span> <span class="nav-text">使用客户端连接</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#配置客户端"><span class="nav-number">4.1.</span> <span class="nav-text">配置客户端</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+    <span class="site-pv">
+      <div class="stats_pv">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      </div>since 2017
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'r3Vg3NWJQ3TT7fQTlMtLeAEl-gzGzoHsz',
+        appKey: '2FLLPxOmf1rxuj3BBnsYDGMx',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("r3Vg3NWJQ3TT7fQTlMtLeAEl-gzGzoHsz", "2FLLPxOmf1rxuj3BBnsYDGMx");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

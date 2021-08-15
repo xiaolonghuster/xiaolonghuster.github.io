@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="编码规范,golang,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="NO WAY OUT | 无往不前" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本规范旨在为日常Go项目开发提供一个代码的规范指导，方便团队形成一个统一的代码风格，提高代码的可读性，规范性和统一性。本规范将从命名规范，注释规范，代码风格和 Go 语言提供的常用的工具这几个方面做一个说明。该规范参考了 go 语言官方代码的风格制定。">
+<meta name="keywords" content="编码规范,golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GO语言代码规范指导">
+<meta property="og:url" content="http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/index.html">
+<meta property="og:site_name" content="NO WAY OUT | 无往不前">
+<meta property="og:description" content="本规范旨在为日常Go项目开发提供一个代码的规范指导，方便团队形成一个统一的代码风格，提高代码的可读性，规范性和统一性。本规范将从命名规范，注释规范，代码风格和 Go 语言提供的常用的工具这几个方面做一个说明。该规范参考了 go 语言官方代码的风格制定。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-08-07T16:32:49.019Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GO语言代码规范指导">
+<meta name="twitter:description" content="本规范旨在为日常Go项目开发提供一个代码的规范指导，方便团队形成一个统一的代码风格，提高代码的可读性，规范性和统一性。本规范将从命名规范，注释规范，代码风格和 Go 语言提供的常用的工具这几个方面做一个说明。该规范参考了 go 语言官方代码的风格制定。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'BWXHCKVW55',
+      apiKey: '895eb3c479eff03bc3df73aa58b0160c',
+      indexName: 'xiaolong_li',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"请输出关键信息","hits_empty":"未发现与 <strong>${query}</strong> 相关的文章","hits_stats":"${hits} 条结果被找到,耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/">
+
+
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0875bb23.js","daovoice")
+daovoice('init', {
+  app_id: "0875bb23",
+  user_id: "NO_89757", // 必填: 该用户在您系统上的唯一ID
+  email: "xiaolonghuster@gmail.com", // 选填:  该用户在您系统上的主邮箱
+  name: "xiaolong", // 选填: 用户名
+  signed_up: 1449821660 // 选填: 用户的注册时间，用Unix时间戳表示
+});
+daovoice('update');
+</script>
+
+  <title>GO语言代码规范指导 | NO WAY OUT | 无往不前</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <!-- <div style="float: right;">
+      <a href="https://github.com/xiaolonghuster" target="_blank"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    </div> -->
+
+    <a href="https://github.com/xiaolonghuster" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NO WAY OUT | 无往不前</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projecteuler">
+          <a href="/Project-Euler" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br>
+            
+            欧拉计划
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-artsnotes">
+          <a href="/ARTS-Notes" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-paper-plane"></i> <br>
+            
+            ARTS计划
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/44128669">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NO WAY OUT | 无往不前">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GO语言代码规范指导</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-05T22:24:00+08:00">
+                2019-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GO/" itemprop="url" rel="index">
+                    <span itemprop="name">GO</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/05/Developer-Guide-for-Golang/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/12/05/Developer-Guide-for-Golang/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/12/05/Developer-Guide-for-Golang/" class="leancloud_visitors" data-flag-title="GO语言代码规范指导">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p> 本规范旨在为日常Go项目开发提供一个代码的规范指导，方便团队形成一个统一的代码风格，提高代码的可读性，规范性和统一性。本规范将从命名规范，注释规范，代码风格和 Go 语言提供的常用的工具这几个方面做一个说明。该规范参考了 go 语言官方代码的风格制定。</p>
+ <a id="more"></a>
+<h3 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h3><p>命名是代码规范中很重要的一部分，统一的命名规则有利于提高的代码的可读性，好的命名仅仅通过命名就可以获取到足够多的信息。</p>
+<p>Go在命名时以字母a到Z或a到Z或下划线开头，后面跟着零或更多的字母、下划线和数字(0到9)。Go不允许在命名时中使用@、$和%等标点符号。Go是一种区分大小写的编程语言。因此，Manpower和manpower是两个不同的命名。</p>
+<p>当命名（包括常量、变量、类型、函数名、结构字段等等）以一个大写字母开头，如：Group1，那么使用这种形式的标识符的对象就可以被外部包的代码所使用（客户端程序需要先导入这个包），这被称为导出（像面向对象语言中的 public）。<br>命名如果以小写字母开头，则对包外是不可见的，但是他们在整个包的内部是可见并且可用的（像面向对象语言中的 private ）。</p>
+<h4 id="包命名"><a href="#包命名" class="headerlink" title="包命名"></a>包命名</h4><p>保持package的名字和目录保持一致，尽量采取有意义的包名，简短，有意义，尽量和标准库不要冲突。包名应该为小写单词，不要使用下划线或者混合大小写。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> demo</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br></pre></td></tr></table></figure>
+<h4 id="文件命名"><a href="#文件命名" class="headerlink" title="文件命名"></a>文件命名</h4><p>尽量采取有意义的文件名，简短，有意义，应该为小写单词，使用下划线分隔各个单词。</p>
+<blockquote>
+<p>my_test.go</p>
+</blockquote>
+<h4 id="结构体命名"><a href="#结构体命名" class="headerlink" title="结构体命名"></a>结构体命名</h4><p>采用驼峰命名法，首字母根据访问控制大写或者小写。</p>
+<p>struct 申明和初始化格式采用多行，例如下面：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 多行申明</span></span><br><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span>&#123;</span><br><span class="line">    Username  <span class="keyword">string</span></span><br><span class="line">    Email     <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line"><span class="comment">// 多行初始化</span></span><br><span class="line">u := User&#123;</span><br><span class="line">    Username: <span class="string">"avatar"</span>,</span><br><span class="line">    Email:    <span class="string">"avatar@gmail.com"</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="接口命名"><a href="#接口命名" class="headerlink" title="接口命名"></a>接口命名</h4><p>命名规则基本和上面的结构体类型。</p>
+<p>单个函数的结构名以 “er” 作为后缀，例如 Reader , Writer 。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">        Read(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="变量命名"><a href="#变量命名" class="headerlink" title="变量命名"></a>变量命名</h4><ul>
+<li>和结构体类似，变量名称一般遵循驼峰法，首字母根据访问控制原则大写或者小写，但遇到特有名词时，需要遵循以下规则： </li>
+<li>如果变量为私有，且特有名词为首个单词，则使用小写，如 apiClient</li>
+<li>其它情况都应当使用该名词原有的写法，如 APIClient、repoID、UserID</li>
+<li>错误示例：UrlArray，应该写成 urlArray 或者 URLArray</li>
+<li>若变量类型为 bool 类型，则名称应以 Has, Is, Can 或 Allow 开头</li>
+</ul>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> isExist <span class="keyword">bool</span></span><br><span class="line"><span class="keyword">var</span> hasConflict <span class="keyword">bool</span></span><br><span class="line"><span class="keyword">var</span> canManage <span class="keyword">bool</span></span><br><span class="line"><span class="keyword">var</span> allowGitHook <span class="keyword">bool</span></span><br></pre></td></tr></table></figure>
+<h4 id="常量命名"><a href="#常量命名" class="headerlink" title="常量命名"></a>常量命名</h4><p>常量均需使用全部大写字母组成，并使用下划线分词。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> APP_VER = <span class="string">"1.0"</span></span><br></pre></td></tr></table></figure>
+<p>如果是枚举类型的常量，需要先创建相应类型：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Scheme <span class="keyword">string</span></span><br><span class="line">​</span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    HTTP  Scheme = <span class="string">"http"</span></span><br><span class="line">    HTTPS Scheme = <span class="string">"https"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h4><p>下面的列表显示了Go中的保留字。这些保留字不能用作常量或变量或任何其他标识符名称。</p>
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><p>Go 提供 C 风格的块注释和 C++ 风格的行注释。行注释是常态；块注释主要显示为包注释，但在表达式中很有用或禁用大量代码。</p>
+<ul>
+<li>单行注释是最常见的注释形式，你可以在任何地方使用以 // 开头的单行注释</li>
+<li>多行注释也叫块注释，均已以 /<em> 开头，并以 </em>/ 结尾，且不可以嵌套使用，多行注释一般用于包的文档描述或注释成块的代码片段</li>
+</ul>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这是单行注释</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 这是多行注释 </span></span><br><span class="line"><span class="comment"> * /</span></span><br></pre></td></tr></table></figure>
+<p>go 语言自带的 godoc 工具可以根据注释生成文档，生成可以自动生成对应的网站（ <a href="http://golang.org" target="_blank" rel="noopener">http://golang.org</a> 就是使用 godoc 工具直接生成的），注释的质量决定了生成的文档的质量。每个包都应该有一个包注释，在package子句之前有一个块注释。对于多文件包，包注释只需要存在于一个文件中，任何一个都可以。包评论应该介绍包，并提供与整个包相关的信息。它将首先出现在godoc页面上，并应设置下面的详细文档。</p>
+<p>详细的如何写注释可以 参考：<a href="http://golang.org/doc/effective_go.html#commentary" target="_blank" rel="noopener">http://golang.org/doc/effective_go.html#commentary</a></p>
+<h4 id="包注释"><a href="#包注释" class="headerlink" title="包注释"></a>包注释</h4><p>每个包都应该有一个包注释，一个位于package子句之前的块注释或行注释。包如果有多个go文件，只需要出现在一个go文件中（一般是和包同名的文件）即可。 包注释应该包含下面基本信息(请严格按照这个顺序，简介，创建人，创建时间）：</p>
+<ul>
+<li>包的基本简介（包名，简介）</li>
+<li>创建者，格式： 创建人： rtx 名</li>
+<li>创建时间，格式：创建时间： yyyyMMdd</li>
+</ul>
+<p>例如 util 包的注释示例如下:</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// util 包， 该包包含了项目共用的一些常量，封装了项目中一些共用函数。</span></span><br><span class="line"><span class="comment">// 创建人： xlli5</span></span><br><span class="line"><span class="comment">// 创建时间： 20190522</span></span><br></pre></td></tr></table></figure>
+<h4 id="结构（接口）注释"><a href="#结构（接口）注释" class="headerlink" title="结构（接口）注释"></a>结构（接口）注释</h4><p>每个自定义的结构体或者接口都应该有注释说明，该注释对结构进行简要介绍，放在结构体定义的前一行，格式为： 结构体名， 结构体说明。同时结构体内的每个成员变量都要有说明，该说明放在成员变量的后面（注意对齐），实例如下：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// User ， 用户对象，定义了用户的基础信息</span></span><br><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span>&#123;</span><br><span class="line">    Username  <span class="keyword">string</span> <span class="comment">// 用户名</span></span><br><span class="line">    Email     <span class="keyword">string</span> <span class="comment">// 邮箱</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="函数（方法）注释"><a href="#函数（方法）注释" class="headerlink" title="函数（方法）注释"></a>函数（方法）注释</h4><p>每个函数，或者方法（结构体或者接口下的函数称为方法）都应该有注释说明，函数的注释应该包括三个方面（严格按照此顺序撰写）：</p>
+<ul>
+<li>简要说明，格式说明：以函数名开头，“，”分隔说明部分</li>
+<li>参数列表：每行一个参数，参数名开头，“，”分隔说明部分</li>
+<li>返回值： 每行一个返回值</li>
+</ul>
+<p>示例如下：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// NewtAttrModel ， 属性数据层操作类的工厂方法</span></span><br><span class="line"><span class="comment">// 参数：</span></span><br><span class="line"><span class="comment">//      ctx ： 上下文信息</span></span><br><span class="line"><span class="comment">// 返回值：</span></span><br><span class="line"><span class="comment">//      属性操作类指针</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewAttrModel</span><span class="params">(ctx *common.Context)</span> *<span class="title">AttrModel</span></span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="代码逻辑注释"><a href="#代码逻辑注释" class="headerlink" title="代码逻辑注释"></a>代码逻辑注释</h4><p>对于一些关键位置的代码逻辑，或者局部较为复杂的逻辑，需要有相应的逻辑说明，方便其他开发者阅读该段代码，实例如下：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从 Redis 中批量读取属性，对于没有读取到的 id ， 记录到一个数组里面，准备从 DB 中读取</span></span><br><span class="line">xxxxx</span><br><span class="line">xxxxxxx</span><br><span class="line">xxxxxxx</span><br></pre></td></tr></table></figure>
+<h4 id="注释风格"><a href="#注释风格" class="headerlink" title="注释风格"></a>注释风格</h4><p>统一使用中文注释，对于中英文字符之间严格使用空格分隔， 这个不仅仅是中文和英文之间，英文和中文标点之间也都要使用空格分隔，例如：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从 Redis 中批量读取属性，对于没有读取到的 id ， 记录到一个数组里面，准备从 DB 中读取</span></span><br></pre></td></tr></table></figure>
+<p>上面 Redis 、 id 、 DB 和其他中文字符之间都是用了空格分隔。</p>
+<pre><code>建议全部使用单行注释
+和代码的规范一样，单行注释不要过长，禁止超过 120 字符
+</code></pre><h3 id="代码风格"><a href="#代码风格" class="headerlink" title="代码风格"></a>代码风格</h3><h4 id="缩进和折行"><a href="#缩进和折行" class="headerlink" title="缩进和折行"></a>缩进和折行</h4><ul>
+<li>缩进直接使用 gofmt 工具格式化即可（gofmt 是使用 tab 缩进的）</li>
+<li>折行方面，一行最长不超过120个字符，超过的请使用换行展示，尽量保持格式优雅</li>
+</ul>
+<p>我们使用Goland开发工具，可以直接使用快捷键：ctrl+alt+L，即可。</p>
+<h4 id="语句的结尾"><a href="#语句的结尾" class="headerlink" title="语句的结尾"></a>语句的结尾</h4><p>Go语言中是不需要类似于Java需要冒号结尾，默认一行就是一条数据</p>
+<p>如果你打算将多个语句写在同一行，它们则必须使用。</p>
+<h4 id="括号和空格"><a href="#括号和空格" class="headerlink" title="括号和空格"></a>括号和空格</h4><p>括号和空格方面，也可以直接使用 gofmt 工具格式化（go 会强制左大括号不换行，换行会报语法错误），所有的运算符和操作数之间要留空格。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 正确的方式</span></span><br><span class="line"><span class="keyword">if</span> a &gt; <span class="number">0</span> &#123;</span><br><span class="line">​</span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line"><span class="comment">// 错误的方式</span></span><br><span class="line"><span class="keyword">if</span> a&gt;<span class="number">0</span>  <span class="comment">// a ，0 和 &gt; 之间应该空格</span></span><br><span class="line">&#123;       <span class="comment">// 左大括号不可以换行，会报语法错误</span></span><br><span class="line">​</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="import-规范"><a href="#import-规范" class="headerlink" title="import 规范"></a>import 规范</h4><p>import在多行的情况下，goimports会自动帮你格式化，但是我们这里还是规范一下import的一些规范，如果你在一个文件里面引入了一个package，还是建议采用如下格式：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>如果你的包引入了三种类型的包，标准库包，程序内部包，第三方包，建议采用如下方式进行组织你的包：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/json"</span></span><br><span class="line">    <span class="string">"strings"</span></span><br><span class="line">​</span><br><span class="line">    <span class="string">"myproject/models"</span></span><br><span class="line">    <span class="string">"myproject/controller"</span></span><br><span class="line">    <span class="string">"myproject/utils"</span></span><br><span class="line">​</span><br><span class="line">    <span class="string">"github.com/astaxie/beego"</span></span><br><span class="line">    <span class="string">"github.com/go-sql-driver/mysql"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>有顺序的引入包，不同的类型采用空格分离，第一种实标准库，第二是项目包，第三是第三方包。</p>
+<p>在项目中不要使用相对路径引入包：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是不好的导入</span></span><br><span class="line"><span class="keyword">import</span> “../net”</span><br><span class="line">​</span><br><span class="line"><span class="comment">// 这是正确的做法</span></span><br><span class="line"><span class="keyword">import</span> “github.com/repo/proj/src/net”</span><br></pre></td></tr></table></figure>
+<p>但是如果是引入本项目中的其他包，最好使用相对路径。</p>
+<h4 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h4><ul>
+<li>错误处理的原则就是不能丢弃任何有返回err的调用，不要使用 _ 丢弃，必须全部处理。接收到错误，要么返回err，或者使用log记录下来</li>
+<li>尽早return：一旦有错误发生，马上返回</li>
+<li>尽量不要使用panic，除非你知道你在做什么</li>
+<li>错误描述如果是英文必须为小写，不需要标点结尾</li>
+<li>采用独立的错误流进行处理</li>
+</ul>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误写法</span></span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="comment">// error handling</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// normal code</span></span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line"><span class="comment">// 正确写法</span></span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="comment">// error handling</span></span><br><span class="line">    <span class="keyword">return</span> <span class="comment">// or continue, etc.</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// normal code</span></span><br></pre></td></tr></table></figure>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>单元测试文件名命名规范为 example_test.go 测试用例的函数名称必须以 Test 开头，例如：TestExample 每个重要的函数都要首先编写测试用例，测试用例和正规代码一起提交方便进行回归测试。</p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><h3 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h3><h3 id="常用工具"><a href="#常用工具" class="headerlink" title="常用工具"></a>常用工具</h3><p>上面提到了很过规范， go 语言本身在代码规范性这方面也做了很多努力，很多限制都是强制语法要求，例如左大括号不换行，引用的包或者定义的变量不使用会报错，此外 go 还是提供了很多好用的工具帮助我们进行代码的规范，</p>
+<p>gofmt 大部分的格式问题可以通过gofmt解决， gofmt 自动格式化代码，保证所有的 go 代码与官方推荐的格式保持一致，于是所有格式有关问题，都以 gofmt 的结果为准。</p>
+<p>goimport 我们强烈建议使用 goimport ，该工具在 gofmt 的基础上增加了自动删除和引入包。</p>
+<blockquote>
+<p>go get golang.org/x/tools/cmd/goimports</p>
+</blockquote>
+<p>go vet vet工具可以帮我们静态分析我们的源码存在的各种问题，例如多余的代码，提前return的逻辑，struct的tag是否符合标准等。</p>
+<blockquote>
+<p>go get golang.org/x/tools/cmd/vet</p>
+</blockquote>
+<p>使用如下：</p>
+<blockquote>
+<p>go vet .</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">----------本文结束<i class="fa fa-paw"></i>感谢您的阅读----------</div>
+    
+</div>
+
+      </div>
+    
+
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/third_part/wechat_qrcode_for_yileshuo.jpg" alt="xiaolong wechat" style="width: 200px; max-width: 100%;">
+    <div>一只程序猿对世界的不完全理解</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编码规范/" rel="tag"># 编码规范</a>
+          
+            <a href="/tags/golang/" rel="tag"># golang</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/24/A-Solid-Guide-to-SOLID-Principles-in-Java/" rel="next" title="Java开发的设计原则-SOLID">
+                <i class="fa fa-chevron-left"></i> Java开发的设计原则-SOLID
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/13/Introduction-docker-repository-setup/" rel="prev" title="你必须知道的Docker镜像仓库的搭建">
+                你必须知道的Docker镜像仓库的搭建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+<div class="addthis_inline_share_toolbox">
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d917cdcae8a3a18" async="async"></script>
+</div>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/44128669" alt="xiaolong">
+            
+              <p class="site-author-name" itemprop="name">xiaolong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaolonghuster" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/xiaolonghuster" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/645582316" target="_blank" title="weibo">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://www.linkedin.com/in/xiaolong-li-981b27a1" target="_blank" title="LinkedIn">
+                      
+                        <i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#命名规范"><span class="nav-number">1.</span> <span class="nav-text">命名规范</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#包命名"><span class="nav-number">1.1.</span> <span class="nav-text">包命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文件命名"><span class="nav-number">1.2.</span> <span class="nav-text">文件命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结构体命名"><span class="nav-number">1.3.</span> <span class="nav-text">结构体命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接口命名"><span class="nav-number">1.4.</span> <span class="nav-text">接口命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#变量命名"><span class="nav-number">1.5.</span> <span class="nav-text">变量命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常量命名"><span class="nav-number">1.6.</span> <span class="nav-text">常量命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关键字"><span class="nav-number">1.7.</span> <span class="nav-text">关键字</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注释"><span class="nav-number">2.</span> <span class="nav-text">注释</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#包注释"><span class="nav-number">2.1.</span> <span class="nav-text">包注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结构（接口）注释"><span class="nav-number">2.2.</span> <span class="nav-text">结构（接口）注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数（方法）注释"><span class="nav-number">2.3.</span> <span class="nav-text">函数（方法）注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码逻辑注释"><span class="nav-number">2.4.</span> <span class="nav-text">代码逻辑注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注释风格"><span class="nav-number">2.5.</span> <span class="nav-text">注释风格</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码风格"><span class="nav-number">3.</span> <span class="nav-text">代码风格</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#缩进和折行"><span class="nav-number">3.1.</span> <span class="nav-text">缩进和折行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语句的结尾"><span class="nav-number">3.2.</span> <span class="nav-text">语句的结尾</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#括号和空格"><span class="nav-number">3.3.</span> <span class="nav-text">括号和空格</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#import-规范"><span class="nav-number">3.4.</span> <span class="nav-text">import 规范</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#错误处理"><span class="nav-number">3.5.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">3.6.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件"><span class="nav-number">4.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#技术选型"><span class="nav-number">5.</span> <span class="nav-text">技术选型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用工具"><span class="nav-number">6.</span> <span class="nav-text">常用工具</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+    <span class="site-pv">
+      <div class="stats_pv">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      </div>since 2017
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'r3Vg3NWJQ3TT7fQTlMtLeAEl-gzGzoHsz',
+        appKey: '2FLLPxOmf1rxuj3BBnsYDGMx',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("r3Vg3NWJQ3TT7fQTlMtLeAEl-gzGzoHsz", "2FLLPxOmf1rxuj3BBnsYDGMx");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
