@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiaolong.li/"/>
-  <updated>2021-08-21T15:56:30.797Z</updated>
+  <updated>2021-08-22T17:02:36.202Z</updated>
   <id>http://xiaolong.li/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>TCP 的粘包拆包以及解决方案</title>
+    <link href="http://xiaolong.li/2021/08/23/TCP-stick-package-unpacking/"/>
+    <id>http://xiaolong.li/2021/08/23/TCP-stick-package-unpacking/</id>
+    <published>2021-08-22T16:01:48.000Z</published>
+    <updated>2021-08-22T17:02:36.202Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>TCP 是个流协议，就是没有界限的一串数据。TCP 底层并不了解上层业务数据的具体含义，它会根据 TCP 缓冲区的实际情况进行包的划分，所以在业务上认为一个完整的包可能会被 TCP 拆分为多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送，这就是 TCP <strong>粘包</strong> 和 <strong>拆包</strong>。</p><a id="more"></a><h4 id="为什么-UDP没有粘包？"><a href="#为什么-UDP没有粘包？" class="headerlink" title="为什么 UDP没有粘包？"></a>为什么 UDP没有粘包？</h4><p>粘包拆包问题在数据链路层、网络层以及传输层都有可能发生。日常的网络应用开发大都在传输层进行，由于 UDP 有消息保护边界，不会发生粘包拆包问题，因此粘包拆包问题只发生在 TCP 协议中。</p><h4 id="粘包拆包发生场景"><a href="#粘包拆包发生场景" class="headerlink" title="粘包拆包发生场景"></a>粘包拆包发生场景</h4><p>因为 TCP 是面向流，没有边界，而操作系统在发送 TCP 数据时，会通过缓冲区来进行优化，例如缓冲区为 1024 个字节大小。</p><p>如果一次请求发送的数据量比较小，没达到缓冲区大小，TCP 则会将多个请求合并为同一个请求进行发送，这就形成了粘包问题。</p><p>如果一次请求发送的数据量比较大，超过了缓冲区大小，TCP 就会将其拆分为多次发送，这就是拆包。</p><p>关于粘包和拆包可以参考下图的几种情况：</p><h5 id="正常数据包"><a href="#正常数据包" class="headerlink" title="正常数据包"></a>正常数据包</h5><blockquote><p>正常的理想情况，两个包恰好满足 TCP 缓冲区的大小或达到 TCP 等待时长，分别发送两个包</p></blockquote><p>服务端一共读到两个数据包，第一个包包含客户端发出的第一条消息的完整信息，第二个包包含客户端发出的第二条消息，那这种情况比较好处理，服务器只需要简单的从网络缓冲区去读就好了，第一次读到第一条消息的完整信息，消费完再从网络缓冲区将第二条完整消息读出来消费。这种情况没有发生粘包、拆包。</p><p><img src="/images/network/2021-08-23-tcp-packet-normal.png" alt="image"></p><h5 id="粘包"><a href="#粘包" class="headerlink" title="粘包"></a>粘包</h5><blockquote><p>两个包较小，间隔时间短，发生粘包，合并成一个包发送</p></blockquote><p>服务端一共就读到一个数据包，这个数据包包含客户端发出的两条消息的完整信息，这个时候服务端不知道如何区分原始的两个包，这种情况其实是发生了 TCP 粘包。</p><p><img src="/images/network/2021-08-23-tcp-packet-stick.png" alt="image"></p><h5 id="拆包"><a href="#拆包" class="headerlink" title="拆包"></a>拆包</h5><blockquote><p>一个包过大，超过缓存区大小，拆分成两个或多个包发送</p></blockquote><p><img src="/images/network/2021-08-23-tcp-packet-unpacking.png" alt="image"></p><h5 id="既有粘包又有拆包"><a href="#既有粘包又有拆包" class="headerlink" title="既有粘包又有拆包"></a>既有粘包又有拆包</h5><blockquote><p>packet_1 过大，进行了拆包处理，而拆出去的一部分又与 packet_2 进行粘包处理。</p></blockquote><p>服务端一共收到了两个数据包，第一个数据包只包含了第一条消息的一部分，第一条消息的后半部分和第二条消息都在第二个数据包中，或者是第一个数据包包含了第一条消息的完整信息和第二条消息的一部分信息，第二个数据包包含了第二条消息的剩下部分，这种情况其实是发送了 TCP 拆包，因为发生了一条消息被拆分在两个包里面发送了，同样上面的服务器逻辑对于这种情况是不好处理的。</p><p><img src="/images/network/2021-08-23-tcp-packet-stick-unpacking.png" alt="image"></p><h4 id="产生-TCP-粘包和拆包的原因"><a href="#产生-TCP-粘包和拆包的原因" class="headerlink" title="产生 TCP 粘包和拆包的原因"></a>产生 TCP 粘包和拆包的原因</h4><p>TCP 是以流的方式传输数据，传输的最小单位为一个报文段（segment）。TCP Header中有个 Options 标识位，常见的标识为 mss(Maximum Segment Size) 指的是，连接层每次传输的数据有个最大限制 MTU(Maximum Transmission Unit)，一般是 1500 比特，超过这个量要分成多个报文段，mss 则是这个最大限制减去 TCP 的 header，光是要传输的数据的大小，一般为 1460 比特。换算成字节，也就是 180 多字节。</p><p>TCP 为提高性能，发送端会将需要发送的数据发送到缓冲区，等待缓冲区满了之后，再将缓冲中的数据发送到接收方。同理，接收方也有缓冲区这样的机制，来接收数据。</p><p>发生 TCP 粘包、拆包主要是由于下面一些原因：</p><ol><li>应用程序写入的数据大于套接字缓冲区大小，这将会发生拆包。</li><li>应用程序写入数据小于套接字缓冲区大小，网卡将应用多次写入的数据发送到网络上，这将会发生粘包。</li><li>进行 mss（最大报文长度）大小的 TCP 分段，当 TCP 报文长度 - TCP 头部长度 &gt; mss 的时候将发生拆包。</li><li>接收方法不及时读取套接字缓冲区数据，这将发生粘包。</li></ol><h4 id="如何解决拆包粘包"><a href="#如何解决拆包粘包" class="headerlink" title="如何解决拆包粘包"></a>如何解决拆包粘包</h4><p>既然TCP 是无界的数据流，且协议本身无法避免粘包，拆包的发生，name只能在应用层数据协议上加以控制。通常在制定传输数据时，可以使用如下方法：</p><ol><li>使用带消息头的协议、消息头存储消息开始标识及消息长度信息，服务端获取消息头的时候解析出消息长度，然后向后读取该长度的内容。</li><li>设置定长消息，服务端每次读取既定长度的内容作为一条完整消息。</li><li>设置消息边界，服务端从网络流中按消息编辑分离出消息内容。</li></ol><p>a)先基于第三种方法，假设区分数据边界的标识为换行符 “\n”（注意请求数据本身内部不能包含换行符），数据格式为 Json，例如下面是一个符合这个规则的请求包。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;type&quot;:&quot;message&quot;,&quot;content&quot;:&quot;hello&quot;&#125;\n</span><br></pre></td></tr></table></figure><p>注意上面的请求数据末尾有一个换行字符，代表一个请求的结束。</p><p>b)基于第一种方法，可以制定，首部固定 10 个字节长度用来保存整个数据包长度，位数不够补0的数据协议</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000036&#123;&quot;type&quot;:&quot;message&quot;,&quot;content&quot;:&quot;hello&quot;&#125;</span><br></pre></td></tr></table></figure><p>c)基于第一种方法，可以制定，首部 4 字节网络字节序 unsigned int，标记整个包的长度</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">****&#123;&quot;type&quot;:&quot;message&quot;,&quot;content&quot;:&quot;hello all&quot;&#125;</span><br></pre></td></tr></table></figure><p>其中首部四字节 * 号代表一个网络字节序的 unsigned int 数据，为不可见字符，紧接着是 Json 的数据格式的包体数据。</p><h4 id="Netty对粘包和拆包问题的处理"><a href="#Netty对粘包和拆包问题的处理" class="headerlink" title="Netty对粘包和拆包问题的处理"></a>Netty对粘包和拆包问题的处理</h4><p>Netty 对解决粘包和拆包的方案做了抽象，提供了一些解码器（Decoder）来解决粘包和拆包的问题。如：</p><ul><li>LineBasedFrameDecoder：以行为单位进行数据包的解码；</li><li>DelimiterBasedFrameDecoder：以特殊的符号作为分隔来进行数据包的解码；</li><li>FixedLengthFrameDecoder：以固定长度进行数据包的解码；</li><li>LenghtFieldBasedFrameDecode：适用于消息头包含消息长度的协议（最常用）；</li></ul><p>基于 Netty 进行网络读写的程序，可以直接使用这些 Decoder 来完成数据包的解码。对于高并发、大流量的系统来说，每个数据包都不应该传输多余的数据（所以补齐的方式不可取），LenghtFieldBasedFrameDecode 更适合这样的场景。</p><h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>TCP 协议粘包拆包问题是因为 TCP 协议数据传输是基于字节流的，它不包含消息、数据包等概念，需要应用层协议自己设计消息的边界，即消息帧（Message Framing）。如果应用层协议没有使用基于长度或者基于终结符息边界等方式进行处理，则会导致多个消息的粘包和拆包。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;TCP 是个流协议，就是没有界限的一串数据。TCP 底层并不了解上层业务数据的具体含义，它会根据 TCP 缓冲区的实际情况进行包的划分，所以在业务上认为一个完整的包可能会被 TCP 拆分为多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送，这就是 TCP &lt;strong&gt;粘包&lt;/strong&gt; 和 &lt;strong&gt;拆包&lt;/strong&gt;。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="网络" scheme="http://xiaolong.li/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+      <category term="TCP" scheme="http://xiaolong.li/tags/TCP/"/>
+    
+      <category term="粘包" scheme="http://xiaolong.li/tags/%E7%B2%98%E5%8C%85/"/>
+    
+      <category term="拆包" scheme="http://xiaolong.li/tags/%E6%8B%86%E5%8C%85/"/>
+    
+  </entry>
   
   <entry>
     <title>一文彻底搞懂 TCP 三次握手、四次挥手过程及原理</title>
@@ -470,34 +496,6 @@
       <category term="编码规范" scheme="http://xiaolong.li/tags/%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83/"/>
     
       <category term="golang" scheme="http://xiaolong.li/tags/golang/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java开发的设计原则-SOLID</title>
-    <link href="http://xiaolong.li/2019/11/24/A-Solid-Guide-to-SOLID-Principles-in-Java/"/>
-    <id>http://xiaolong.li/2019/11/24/A-Solid-Guide-to-SOLID-Principles-in-Java/</id>
-    <published>2019-11-24T14:13:37.000Z</published>
-    <updated>2021-08-07T16:32:49.018Z</updated>
-    
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文主要讲述 Java 开发五大设计原则。</p><h3 id="什么是-S-O-L-I-D-原则"><a href="#什么是-S-O-L-I-D-原则" class="headerlink" title="什么是 S.O.L.I.D 原则"></a>什么是 S.O.L.I.D 原则</h3><p>众所周知，Java 编程最基本的原则就是要追求高内聚和低耦合的解决方案和代码模块设计，S.O.L.I.D 是面向对象设计和编程 ( OOD &amp; OOP ) 中几个重要编码原则(Programming Priciple)的首字母缩写。</p><blockquote><p>S: Single responsibility principle [单一职责原则]<br>O: Open-closed principle [开闭原则]<br>L: Liskov substitution principle [里氏替换原则]<br>I: Interface segregation principle [接口隔离原则]<br>D: Dependency inversion principle [依赖倒置原则]</p></blockquote><a id="more"></a><h3 id="单一职责原则-SRP"><a href="#单一职责原则-SRP" class="headerlink" title="单一职责原则 [ SRP ]"></a>单一职责原则 [ SRP ]</h3><blockquote><p>There should never be more than one reason for a class to change.</p></blockquote><p>引起一个类发生改变的原因有且只有一个。也就是说一个类只做一件事情或者一类事情，每个类的分工是明确的，只负责一个功能。如果出现一个类有多个负责功能，那么就应该考虑将这个类拆分成多个来实现。因为如果把多个功能放在同一个类中，功能之间就形成了关联，改变其中一个功能，有可能影响到另一个功能。</p><p>应用：当我们做系统设计时，如果发现有一个类拥有了两种的职责，那就问自己一个问题：可以将这个类分成两个类吗？如果真的有必要，那就分吧。千万不要让一个类干的事情太多！</p><h3 id="开闭原则-OCP"><a href="#开闭原则-OCP" class="headerlink" title="开闭原则 [ OCP ]"></a>开闭原则 [ OCP ]</h3><blockquote><p>Software entities like classes, modules and functions should be open for extension but closed for modifications.</p></blockquote><p>软件实体应该是可扩展，而不可修改的。也就是说，对扩展是开放的，而对修改是封闭的。这个原则是诸多面向对象编程原则中最抽象、最难理解的一个。</p><p>(1)通过增加代码来扩展功能，而不是修改已经存在的代码。<br>(2)若客户模块和服务模块遵循同一个接口来设计，则客户模块可以不关心服务模块的类型，服务模块可以方便扩展服务(代码)。<br>(3)OCP支持替换的服务，而不用修改客户模块。</p><p>简言之，对扩展开放，对修改封闭。换句话说，可以去扩展类，但不要去修改类。</p><p>应用：当需求有改动，要修改代码了，此时您要做的是，尽量用继承或组合的方式来扩展类的功能，而不是直接修改类的代码。当然，如果能够确保对整体架构不会产生任何影响，那么也没必要搞得那么复杂了，直接改这个类吧。</p><h3 id="里氏替换原则-LSP"><a href="#里氏替换原则-LSP" class="headerlink" title="里氏替换原则 [ LSP ]"></a>里氏替换原则 [ LSP ]</h3><blockquote><p>Functions that use pointers or references to base classes must be able to use objects of derived classes without knowing it.</p></blockquote><p>父类能够替换子类，但子类不一定能替换父类。也就是说，在代码中凡是父类出现的地方，都可以用子类进行替换，并且程序不会报错，也不会在运行时出现任何异常，但反过来却不一定成立。</p><p>应用：在继承类时，务必重写（Override）父类中所有的方法，尤其需要注意父类的 protected 方法（它们往往是让您重写的），子类尽量不要暴露自己的 public 方法供外界调用。</p><p>该原则由麻省理工学院的 Barbara Liskov 女士提出，她是美国第一位获取计算机博士学位的女性，曾经也获得过计算机图灵奖。</p><h3 id="接口隔离原则-ISP"><a href="#接口隔离原则-ISP" class="headerlink" title="接口隔离原则 [ ISP ]"></a>接口隔离原则 [ ISP ]</h3><blockquote><p>The dependency of one class to another one should depend on the smallest possible interface.</p></blockquote><p>不要对外暴露没有实际意义的接口。也就是说，接口是给别人调用的，那就不要去为难别人了，尽可能保证接口的实用性吧。她好，我也好。</p><p>应用：当需要对外暴露接口时，需要再三斟酌，如果真的没有必要对外提供的，就删了吧。一旦您提供了，就意味着，您将来要多做一件事情，何苦要给自己找事做呢。</p><h3 id="依赖倒置原则-DIP"><a href="#依赖倒置原则-DIP" class="headerlink" title="依赖倒置原则 [ DIP ]"></a>依赖倒置原则 [ DIP ]</h3><blockquote><p>High level modules should not depends upon low level modules. Both should depend upon abstractions. Abstractions should not depend upon details. Details should depend upon abstractions.</p></blockquote><p>应该面向接口编程，不应该面向实现类编程。面向实现类编程，相当于就是论事，那是正向依赖（正常人思维）；面向接口编程，相当于通过事物表象来看本质，那是反向依赖，即依赖倒置（程序员思维）。</p><p>应用：并不是说，所有的类都要有一个对应的接口，而是说，如果有接口，那就尽量使用接口来编程吧。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文主要讲述 Java 开发五大设计原则。&lt;/p&gt;
-&lt;h3 id=&quot;什么是-S-O-L-I-D-原则&quot;&gt;&lt;a href=&quot;#什么是-S-O-L-I-D-原则&quot; class=&quot;headerlink&quot; title=&quot;什么是 S.O.L.I.D 原则&quot;&gt;&lt;/a&gt;什么是 S.O.L.I.D 原则&lt;/h3&gt;&lt;p&gt;众所周知，Java 编程最基本的原则就是要追求高内聚和低耦合的解决方案和代码模块设计，S.O.L.I.D 是面向对象设计和编程 ( OOD &amp;amp; OOP ) 中几个重要编码原则(Programming Priciple)的首字母缩写。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;S: Single responsibility principle [单一职责原则]&lt;br&gt;O: Open-closed principle [开闭原则]&lt;br&gt;L: Liskov substitution principle [里氏替换原则]&lt;br&gt;I: Interface segregation principle [接口隔离原则]&lt;br&gt;D: Dependency inversion principle [依赖倒置原则]&lt;/p&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-      <category term="设计模式" scheme="http://xiaolong.li/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-      <category term="SOLID" scheme="http://xiaolong.li/tags/SOLID/"/>
-    
-      <category term="开闭原则" scheme="http://xiaolong.li/tags/%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99/"/>
     
   </entry>
   
