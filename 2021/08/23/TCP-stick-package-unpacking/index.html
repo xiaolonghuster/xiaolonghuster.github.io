@@ -81,22 +81,22 @@
 
 
 
-<meta name="description" content="TCP 是个流协议，就是没有界限的一串数据。TCP 底层并不了解上层业务数据的具体含义，它会根据 TCP 缓冲区的实际情况进行包的划分，所以在业务上认为一个完整的包可能会被 TCP 拆分为多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送，这就是 TCP 粘包 和 拆包。">
+<meta name="description" content="TCP（transport control protocol，传输控制协议）是面向连接的，面向流的，提供高可靠性服务。收发两端（客户端和服务器端）都要有一一成对的socket，因此，发送端为了将多个发往接收端的包，更有效的发到对方，使用了优化方法（Nagle算法），将多次间隔较小且数据量小的数据，合并成一个大的数据块，然后进行封包。这样，接收端，就难于分辨出来了，必须提供科学的拆包机制。即面向流的">
 <meta name="keywords" content="TCP,粘包,拆包">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP 的粘包拆包以及解决方案">
 <meta property="og:url" content="http://xiaolong.li/2021/08/23/TCP-stick-package-unpacking/index.html">
 <meta property="og:site_name" content="NO WAY OUT | 无往不前">
-<meta property="og:description" content="TCP 是个流协议，就是没有界限的一串数据。TCP 底层并不了解上层业务数据的具体含义，它会根据 TCP 缓冲区的实际情况进行包的划分，所以在业务上认为一个完整的包可能会被 TCP 拆分为多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送，这就是 TCP 粘包 和 拆包。">
+<meta property="og:description" content="TCP（transport control protocol，传输控制协议）是面向连接的，面向流的，提供高可靠性服务。收发两端（客户端和服务器端）都要有一一成对的socket，因此，发送端为了将多个发往接收端的包，更有效的发到对方，使用了优化方法（Nagle算法），将多次间隔较小且数据量小的数据，合并成一个大的数据块，然后进行封包。这样，接收端，就难于分辨出来了，必须提供科学的拆包机制。即面向流的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaolong.li/images/network/2021-08-23-tcp-packet-normal.png">
 <meta property="og:image" content="http://xiaolong.li/images/network/2021-08-23-tcp-packet-stick.png">
 <meta property="og:image" content="http://xiaolong.li/images/network/2021-08-23-tcp-packet-unpacking.png">
 <meta property="og:image" content="http://xiaolong.li/images/network/2021-08-23-tcp-packet-stick-unpacking.png">
-<meta property="og:updated_time" content="2021-08-22T17:02:36.202Z">
+<meta property="og:updated_time" content="2021-08-22T17:31:23.522Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP 的粘包拆包以及解决方案">
-<meta name="twitter:description" content="TCP 是个流协议，就是没有界限的一串数据。TCP 底层并不了解上层业务数据的具体含义，它会根据 TCP 缓冲区的实际情况进行包的划分，所以在业务上认为一个完整的包可能会被 TCP 拆分为多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送，这就是 TCP 粘包 和 拆包。">
+<meta name="twitter:description" content="TCP（transport control protocol，传输控制协议）是面向连接的，面向流的，提供高可靠性服务。收发两端（客户端和服务器端）都要有一一成对的socket，因此，发送端为了将多个发往接收端的包，更有效的发到对方，使用了优化方法（Nagle算法），将多次间隔较小且数据量小的数据，合并成一个大的数据块，然后进行封包。这样，接收端，就难于分辨出来了，必须提供科学的拆包机制。即面向流的">
 <meta name="twitter:image" content="http://xiaolong.li/images/network/2021-08-23-tcp-packet-normal.png">
 
 
@@ -457,7 +457,8 @@ daovoice('update');
       
 
       
-        <p>TCP 是个流协议，就是没有界限的一串数据。TCP 底层并不了解上层业务数据的具体含义，它会根据 TCP 缓冲区的实际情况进行包的划分，所以在业务上认为一个完整的包可能会被 TCP 拆分为多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送，这就是 TCP <strong>粘包</strong> 和 <strong>拆包</strong>。</p>
+        <p>TCP（transport control protocol，传输控制协议）是面向连接的，面向流的，提供高可靠性服务。收发两端（客户端和服务器端）都要有一一成对的socket，因此，发送端为了将多个发往接收端的包，更有效的发到对方，使用了优化方法（Nagle算法），将多次间隔较小且数据量小的数据，合并成一个大的数据块，然后进行封包。这样，接收端，就难于分辨出来了，必须提供科学的拆包机制。即面向流的通信是无消息保护边界的。</p>
+<p>TCP 底层并不了解上层业务数据的具体含义，它会根据 TCP 缓冲区的实际情况进行包的划分，所以在业务上认为一个完整的包可能会被 TCP 拆分为多个包进行发送，也有可能把多个小的包封装成一个大的数据包发送，这就是 TCP <strong>粘包</strong> 和 <strong>拆包</strong>。</p>
 <a id="more"></a>
 <h4 id="为什么-UDP没有粘包？"><a href="#为什么-UDP没有粘包？" class="headerlink" title="为什么 UDP没有粘包？"></a>为什么 UDP没有粘包？</h4><p>粘包拆包问题在数据链路层、网络层以及传输层都有可能发生。日常的网络应用开发大都在传输层进行，由于 UDP 有消息保护边界，不会发生粘包拆包问题，因此粘包拆包问题只发生在 TCP 协议中。</p>
 <h4 id="粘包拆包发生场景"><a href="#粘包拆包发生场景" class="headerlink" title="粘包拆包发生场景"></a>粘包拆包发生场景</h4><p>因为 TCP 是面向流，没有边界，而操作系统在发送 TCP 数据时，会通过缓冲区来进行优化，例如缓冲区为 1024 个字节大小。</p>
@@ -492,7 +493,7 @@ daovoice('update');
 <li>进行 mss（最大报文长度）大小的 TCP 分段，当 TCP 报文长度 - TCP 头部长度 &gt; mss 的时候将发生拆包。</li>
 <li>接收方法不及时读取套接字缓冲区数据，这将发生粘包。</li>
 </ol>
-<h4 id="如何解决拆包粘包"><a href="#如何解决拆包粘包" class="headerlink" title="如何解决拆包粘包"></a>如何解决拆包粘包</h4><p>既然TCP 是无界的数据流，且协议本身无法避免粘包，拆包的发生，name只能在应用层数据协议上加以控制。通常在制定传输数据时，可以使用如下方法：</p>
+<h4 id="如何解决拆包粘包"><a href="#如何解决拆包粘包" class="headerlink" title="如何解决拆包粘包"></a>如何解决拆包粘包</h4><p>既然TCP 是无界的数据流，且协议本身无法避免粘包，拆包的发生，那么只能在应用层数据协议上加以控制。通常在制定传输数据时，可以使用如下方法：</p>
 <ol>
 <li>使用带消息头的协议、消息头存储消息开始标识及消息长度信息，服务端获取消息头的时候解析出消息长度，然后向后读取该长度的内容。</li>
 <li>设置定长消息，服务端每次读取既定长度的内容作为一条完整消息。</li>
@@ -501,7 +502,7 @@ daovoice('update');
 <p>a)先基于第三种方法，假设区分数据边界的标识为换行符 “\n”（注意请求数据本身内部不能包含换行符），数据格式为 Json，例如下面是一个符合这个规则的请求包。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;type&quot;:&quot;message&quot;,&quot;content&quot;:&quot;hello&quot;&#125;\n</span><br></pre></td></tr></table></figure>
 <p>注意上面的请求数据末尾有一个换行字符，代表一个请求的结束。</p>
-<p>b)基于第一种方法，可以制定，首部固定 10 个字节长度用来保存整个数据包长度，位数不够补0的数据协议</p>
+<p>b)基于第一种方法，可以制定，首部固定 10 个字节长度用来保存整个数据包长度，位数不够则补 0 的数据协议</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000036&#123;&quot;type&quot;:&quot;message&quot;,&quot;content&quot;:&quot;hello&quot;&#125;</span><br></pre></td></tr></table></figure>
 <p>c)基于第一种方法，可以制定，首部 4 字节网络字节序 unsigned int，标记整个包的长度</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">****&#123;&quot;type&quot;:&quot;message&quot;,&quot;content&quot;:&quot;hello all&quot;&#125;</span><br></pre></td></tr></table></figure>
@@ -514,7 +515,7 @@ daovoice('update');
 <li>LenghtFieldBasedFrameDecode：适用于消息头包含消息长度的协议（最常用）；</li>
 </ul>
 <p>基于 Netty 进行网络读写的程序，可以直接使用这些 Decoder 来完成数据包的解码。对于高并发、大流量的系统来说，每个数据包都不应该传输多余的数据（所以补齐的方式不可取），LenghtFieldBasedFrameDecode 更适合这样的场景。</p>
-<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>TCP 协议粘包拆包问题是因为 TCP 协议数据传输是基于字节流的，它不包含消息、数据包等概念，需要应用层协议自己设计消息的边界，即消息帧（Message Framing）。如果应用层协议没有使用基于长度或者基于终结符息边界等方式进行处理，则会导致多个消息的粘包和拆包。</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>TCP 协议粘包拆包问题是因为 TCP 协议数据传输是基于字节流的，它不包含消息、数据包等概念，需要应用层协议自己设计消息的边界，即消息帧（Message Framing）。如果应用层协议没有使用基于长度、终结符信息或者消息边界等方式进行处理，则会导致多个消息的粘包和拆包。</p>
 
       
     </div>
