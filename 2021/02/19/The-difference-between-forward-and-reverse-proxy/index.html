@@ -81,18 +81,21 @@
 
 
 
-<meta name="description" content="什么是代理？代理其实就是一个中介，A和B本来可以直连，中间插入一个C，C就是中介。刚开始的时候，代理多数是帮助内网client访问外网server用的，后来出现了反向代理，”反向”的意思其实是指方向相反，即代理将来自外网客户端的请求转发到内网服务器，从外到内。 正向代理正向代理类似一个跳板机，代理访问外部资源 比如我们国内访问谷歌，直接访问访问不到，我们可以通过一个正向代理服务器，请求发到代理服，">
+<meta name="description" content="什么是代理服务器？所谓代理服务器就是位于发起请求的客户端与原始服务器端之间的一台跳板服务器，正向代理可以隐藏客户端，反向代理可以隐藏原始服务器。">
 <meta name="keywords" content="正向代理,反向代理,Nginx">
 <meta property="og:type" content="article">
 <meta property="og:title" content="正向代理和反向代理的区别">
 <meta property="og:url" content="http://xiaolong.li/2021/02/19/The-difference-between-forward-and-reverse-proxy/index.html">
 <meta property="og:site_name" content="NO WAY OUT | 无往不前">
-<meta property="og:description" content="什么是代理？代理其实就是一个中介，A和B本来可以直连，中间插入一个C，C就是中介。刚开始的时候，代理多数是帮助内网client访问外网server用的，后来出现了反向代理，”反向”的意思其实是指方向相反，即代理将来自外网客户端的请求转发到内网服务器，从外到内。 正向代理正向代理类似一个跳板机，代理访问外部资源 比如我们国内访问谷歌，直接访问访问不到，我们可以通过一个正向代理服务器，请求发到代理服，">
+<meta property="og:description" content="什么是代理服务器？所谓代理服务器就是位于发起请求的客户端与原始服务器端之间的一台跳板服务器，正向代理可以隐藏客户端，反向代理可以隐藏原始服务器。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2021-08-07T16:32:49.023Z">
+<meta property="og:image" content="http://xiaolong.li/images/network/2021-02-19-forward-proxy.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/network/2021-02-19-reverse-proxy.jpg">
+<meta property="og:updated_time" content="2021-08-31T11:28:25.961Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正向代理和反向代理的区别">
-<meta name="twitter:description" content="什么是代理？代理其实就是一个中介，A和B本来可以直连，中间插入一个C，C就是中介。刚开始的时候，代理多数是帮助内网client访问外网server用的，后来出现了反向代理，”反向”的意思其实是指方向相反，即代理将来自外网客户端的请求转发到内网服务器，从外到内。 正向代理正向代理类似一个跳板机，代理访问外部资源 比如我们国内访问谷歌，直接访问访问不到，我们可以通过一个正向代理服务器，请求发到代理服，">
+<meta name="twitter:description" content="什么是代理服务器？所谓代理服务器就是位于发起请求的客户端与原始服务器端之间的一台跳板服务器，正向代理可以隐藏客户端，反向代理可以隐藏原始服务器。">
+<meta name="twitter:image" content="http://xiaolong.li/images/network/2021-02-19-forward-proxy.jpg">
 
 
 
@@ -430,10 +433,28 @@ daovoice('update');
       
 
       
-        <h4 id="什么是代理？"><a href="#什么是代理？" class="headerlink" title="什么是代理？"></a>什么是代理？</h4><p>代理其实就是一个中介，A和B本来可以直连，中间插入一个C，C就是中介。<br>刚开始的时候，代理多数是帮助内网client访问外网server用的，后来出现了反向代理，”反向”的意思其实是指方向相反，即代理将来自外网客户端的请求转发到内网服务器，从外到内。</p>
-<h4 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h4><p>正向代理类似一个跳板机，代理访问外部资源</p>
+        <h4 id="什么是代理服务器？"><a href="#什么是代理服务器？" class="headerlink" title="什么是代理服务器？"></a>什么是代理服务器？</h4><p>所谓代理服务器就是位于发起请求的客户端与原始服务器端之间的一台跳板服务器，正向代理可以隐藏客户端，反向代理可以隐藏原始服务器。</p>
+<a id="more"></a>
+<h4 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h4><p>正向代理（Forward Proxy）类似一个跳板机，代理访问外部资源</p>
 <p>比如我们国内访问谷歌，直接访问访问不到，我们可以通过一个正向代理服务器，请求发到代理服，代理服务器能够访问谷歌，这样由代理去谷歌取到返回数据，再返回给我们，这样我们就能访问谷歌了</p>
-<p><a href="https://www.cnblogs.com/taostaryu/p/10547132.html" target="_blank" rel="noopener">https://www.cnblogs.com/taostaryu/p/10547132.html</a></p>
+<p><img src="/images/network/2021-02-19-forward-proxy.jpg" alt="image" title="正向代理"></p>
+<h5 id="正向代理的用途"><a href="#正向代理的用途" class="headerlink" title="正向代理的用途"></a>正向代理的用途</h5><blockquote>
+<p>（1）访问原来无法访问的资源，如google</p>
+<p>（2）可以做缓存，加速访问资源</p>
+<p>（3）对客户端访问授权，上网进行认证</p>
+<p>（4）代理可以记录用户访问记录（上网行为管理），对外隐藏用户信息</p>
+</blockquote>
+<h4 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h4><p>反向代理（Reverse Proxy）实际运行方式是指以代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给 internet 上请求连接的客户端，此时代理服务器对外就表现为一个服务器。</p>
+<p><img src="/images/network/2021-02-19-reverse-proxy.jpg" alt="image" title="反向代理"></p>
+<h5 id="反向代理的作用"><a href="#反向代理的作用" class="headerlink" title="反向代理的作用"></a>反向代理的作用</h5><blockquote>
+<p>（1）保证内网的安全，阻止web攻击，大型网站，通常将反向代理作为公网访问地址，Web服务器是内网</p>
+<p>（2）负载均衡，通过反向代理服务器来优化网站的负载</p>
+</blockquote>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><blockquote class="blockquote-center"><p>正向代理即是客户端代理，代理客户端，服务端不知道实际发起请求的客户端</p>
+<p>反向代理即是服务端代理，代理服务端，客户端不知道实际提供服务的服务端</p>
+</blockquote>
+<p>正向代理中，proxy 和 client 同属一个 LAN，对 server 透明<br>反向代理中，proxy 和 server 同属一个 LAN，对 client 透明</p>
+<p>实际上 proxy 在两种代理中做的事都是代为收发请求和响应，不过从结构上来看正好左右互换了下，所以把后出现的那种代理方式叫成了反向代理</p>
 
       
     </div>
@@ -679,7 +700,7 @@ daovoice('update');
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是代理？"><span class="nav-number">1.</span> <span class="nav-text">什么是代理？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正向代理"><span class="nav-number">2.</span> <span class="nav-text">正向代理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是代理服务器？"><span class="nav-number">1.</span> <span class="nav-text">什么是代理服务器？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正向代理"><span class="nav-number">2.</span> <span class="nav-text">正向代理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#正向代理的用途"><span class="nav-number">2.1.</span> <span class="nav-text">正向代理的用途</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反向代理"><span class="nav-number">3.</span> <span class="nav-text">反向代理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#反向代理的作用"><span class="nav-number">3.1.</span> <span class="nav-text">反向代理的作用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
