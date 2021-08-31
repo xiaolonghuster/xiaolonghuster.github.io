@@ -121,14 +121,14 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2017/06/08/TSDB-Introduction/</loc>
+    <loc>http://xiaolong.li/2017/06/09/TSDB-INFLUXDB-Notion/</loc>
     
     <lastmod>2021-08-07T16:32:49.023Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2017/06/09/TSDB-INFLUXDB-Notion/</loc>
+    <loc>http://xiaolong.li/2017/06/08/TSDB-Introduction/</loc>
     
     <lastmod>2021-08-07T16:32:49.023Z</lastmod>
     
@@ -233,14 +233,14 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
+    <loc>http://xiaolong.li/2020/03/02/How-to-cancel-streaming-gRPC-Send-from-server/</loc>
     
     <lastmod>2021-08-07T16:32:49.019Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2020/03/02/How-to-cancel-streaming-gRPC-Send-from-server/</loc>
+    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
     
     <lastmod>2021-08-07T16:32:49.019Z</lastmod>
     
@@ -261,6 +261,13 @@
   </url>
   
   <url>
+    <loc>http://xiaolong.li/2019/09/19/ARTS-week-001/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.018Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaolong.li/2019/11/24/A-Solid-Guide-to-SOLID-Principles-in-Java/</loc>
     
     <lastmod>2021-08-07T16:32:49.018Z</lastmod>
@@ -275,7 +282,7 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2019/09/19/ARTS-week-001/</loc>
+    <loc>http://xiaolong.li/2019/11/09/ARTS-week-004/</loc>
     
     <lastmod>2021-08-07T16:32:49.018Z</lastmod>
     
@@ -283,13 +290,6 @@
   
   <url>
     <loc>http://xiaolong.li/2019/10/21/ARTS-week-003/</loc>
-    
-    <lastmod>2021-08-07T16:32:49.018Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaolong.li/2019/11/09/ARTS-week-004/</loc>
     
     <lastmod>2021-08-07T16:32:49.018Z</lastmod>
     
