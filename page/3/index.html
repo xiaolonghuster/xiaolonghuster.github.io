@@ -146,8 +146,6 @@ daovoice('update');
 
 
 
-<link rel="stylesheet" href="/assets/css/APlayer.min.css" class="aplayer-style-marker">
-<script src="/assets/js/APlayer.min.js" class="aplayer-script-marker"></script>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -1306,26 +1304,23 @@ daovoice('update');
 
       
         
-          <div id="aplayer-Fxvitnxb" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;width:70%;">
-            <pre class="aplayer-lrc-content"></pre>
-        </div>
-        <script>
-          var ap = new APlayer({
-            element: document.getElementById("aplayer-Fxvitnxb"),
-            narrow: false,
-            autoplay: true,
-            showlrc: false,
-            music: {
-              title: "JVM内存结构概述",
-              author: "小龙同学",
-              url: "http://oss.xiaokeji.xyz/20191013/Introduction-to-JVM-Memory-Structure.mp3",
-              pic: "/images/jvm/Introduction-to-JVM-Memory-Structure.jpg",
-              lrc: ""
-            }
-          });
-          window.aplayers || (window.aplayers = []);
-          window.aplayers.push(ap);
-        </script>
+          <div id="aplayer0" class="aplayer" style="margin-bottom: 20px;width:70%;"></div>
+		<script>
+			var ap = new APlayer({
+				element: document.getElementById("aplayer0"),
+				narrow: false,
+				autoplay: true,
+				showlrc: 0,
+				music: {
+					title: "JVM内存结构概述",
+					author: "小龙同学",
+					url: "http://oss.xiaokeji.xyz/20191013/Introduction-to-JVM-Memory-Structure.mp3",
+					pic: "/images/jvm/Introduction-to-JVM-Memory-Structure.jpg",
+				}
+			});
+			window.aplayers || (window.aplayers = []);
+			window.aplayers.push(ap);
+		</script>
 <h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>基本问题:</p>
 <blockquote>
 <p>介绍下 Java 内存区域（运行时数据区）<br>JDK7 和 JDK8 在内存结构上有什么变化</p>

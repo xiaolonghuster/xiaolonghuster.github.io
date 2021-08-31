@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="为什么 zookeeper 集群的节点数是奇数zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。 123leader : 负责进行投票的发起和决议，更新系统状态。follower : 用于接收客户端请求并向客户端返回结果以及在选举">
+<meta name="description" content="为什么 zookeeper 集群的节点数是奇数zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。 123leader : 负责进行投票的发起和决议，更新系统状态。follower : 用于接收客户端请求并向客户端返回结果以及在选">
 <meta name="keywords" content="zookeeper">
 <meta property="og:type" content="article">
 <meta property="og:title" content="zookeeper集群搭建">
 <meta property="og:url" content="http://xiaolong.li/2020/11/11/Zookeeper-Cluster-building/index.html">
 <meta property="og:site_name" content="NO WAY OUT | 无往不前">
-<meta property="og:description" content="为什么 zookeeper 集群的节点数是奇数zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。 123leader : 负责进行投票的发起和决议，更新系统状态。follower : 用于接收客户端请求并向客户端返回结果以及在选举">
+<meta property="og:description" content="为什么 zookeeper 集群的节点数是奇数zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。 123leader : 负责进行投票的发起和决议，更新系统状态。follower : 用于接收客户端请求并向客户端返回结果以及在选">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2021-08-07T16:32:49.024Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="zookeeper集群搭建">
-<meta name="twitter:description" content="为什么 zookeeper 集群的节点数是奇数zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。 123leader : 负责进行投票的发起和决议，更新系统状态。follower : 用于接收客户端请求并向客户端返回结果以及在选举">
+<meta name="twitter:description" content="为什么 zookeeper 集群的节点数是奇数zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。 123leader : 负责进行投票的发起和决议，更新系统状态。follower : 用于接收客户端请求并向客户端返回结果以及在选">
 
 
 
@@ -452,7 +452,7 @@ daovoice('update');
       
 
       
-        <h4 id="为什么-zookeeper-集群的节点数是奇数"><a href="#为什么-zookeeper-集群的节点数是奇数" class="headerlink" title="为什么 zookeeper 集群的节点数是奇数"></a>为什么 zookeeper 集群的节点数是奇数</h4><p>zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。</p>
+        <script src="/assets/js/APlayer.min.js"> </script><h4 id="为什么-zookeeper-集群的节点数是奇数"><a href="#为什么-zookeeper-集群的节点数是奇数" class="headerlink" title="为什么 zookeeper 集群的节点数是奇数"></a>为什么 zookeeper 集群的节点数是奇数</h4><p>zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">leader : 负责进行投票的发起和决议，更新系统状态。</span><br><span class="line">follower : 用于接收客户端请求并向客户端返回结果以及在选举过程中参与投票。</span><br><span class="line">observer : 通常是针对于查询操作做负载的。 observer 与 follower 节点最大的不同在于 observer 没有投票权，在客户端发起的增删改操中， leader 节点是不会把消息传递给 observer 让其投票的。但是查询操作跟 follower 一样，客户端的查询到了 observer 节点， observer 节点会去访问 leader 节点取最新的数据然后返回给客户端。</span><br></pre></td></tr></table></figure>
 <p>集群可以保证在每台机器数据保持一致的情况下，客户端每次发起的查询操作，集群节点都能返回同样的结果。但是对于客户端发起的增、删、改等能改变数据的操作，如果集群中的多台机器各自修改数据，那么就无法保证数据的一致性。</p>
 <p>那么，对于增、删、改操作， zookeeper 集群规定只有 leader 节点才有权利去执行修改数据的操作，而 follower 节点即使接收到客户端发起的数据修改操作，也要将其转交给 leader 来处理， leader节点接收到修改数据的请求后，会向所有 follower 节点广播一条消息，让其执行操作， follower 节点执行完后，需要向 leader 节点回复执行结果。当 leader 节点收到半数以上的 follower 节点的确认消息后，便会判定该操作执行完毕，然后向所有 follower 节点广播该操作已经生效。</p>
