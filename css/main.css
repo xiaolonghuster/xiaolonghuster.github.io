@@ -1835,7 +1835,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #734b25;
+  background: #f6ffff;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2484,6 +2484,10 @@ pre .javascript .function {
   transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
   transition-delay: 0s;
+}
+.algolia-hit-item-link em {
+  font-style: normal;
+  font-weight: bold;
 }
 .algolia-pagination .pagination {
   margin-top: 40px;
