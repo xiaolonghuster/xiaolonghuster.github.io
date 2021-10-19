@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiaolong.li/"/>
-  <updated>2021-09-16T14:23:28.586Z</updated>
+  <updated>2021-10-18T12:09:12.672Z</updated>
   <id>http://xiaolong.li/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>分布式锁的 Redisson 实现</title>
+    <link href="http://xiaolong.li/2021/10/18/Redisson-for-Distributed-lock/"/>
+    <id>http://xiaolong.li/2021/10/18/Redisson-for-Distributed-lock/</id>
+    <published>2021-10-18T06:36:51.000Z</published>
+    <updated>2021-10-18T12:09:12.672Z</updated>
+    
+    <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><p>本文主要介绍 Redisson 如何实现分布式锁的原理</p><a id="more"></a><h4 id="高效分布式锁"><a href="#高效分布式锁" class="headerlink" title="高效分布式锁"></a>高效分布式锁</h4><p>在设计分布式锁的时候，应该考虑分布式锁至少要满足的一些条件，同时考虑如何高效的设计分布式锁，以下几点是必须要考虑的。</p><h5 id="互斥"><a href="#互斥" class="headerlink" title="互斥"></a>互斥</h5><p>在分布式高并发的条件下，我们最需要保证，同一时刻只能有一个线程获得锁，这是最基本的一点。</p><h5 id="防止死锁"><a href="#防止死锁" class="headerlink" title="防止死锁"></a>防止死锁</h5><p>在分布式高并发的条件下，比如有个线程获得锁的同时，还没有来得及去释放锁，就因为系统故障或者其它原因使它无法执行释放锁的命令,导致其它线程都无法获得锁，造成死锁。</p><p>所以分布式非常有必要设置锁的有效时间，确保系统出现故障后，在一定时间内能够主动去释放锁，避免造成死锁的情况。</p><h5 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h5><p>对于访问量大的共享资源，需要考虑减少锁等待的时间，避免导致大量线程阻塞。</p><p>所以在锁的设计时，需要考虑两点。</p><ol><li>锁的颗粒度要尽量小。比如你要通过锁来减库存，那这个锁的名称你可以设置成是商品的 ID，而不是任取名称。这样这个锁只对当前商品有效，锁的颗粒度小。</li><li>锁的范围尽量要小。比如只要锁 2 行代码就可以解决问题的，那就不要去锁 10 行代码了。</li></ol><h5 id="重入"><a href="#重入" class="headerlink" title="重入"></a>重入</h5><p>我们知道 ReentrantLock 是可重入锁，那它的特点就是：同一个线程可以重复拿到同一个资源的锁。重入锁非常有利于资源的高效利用。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文主要介绍 Redisson 如何实现分布式锁的原理&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="分布式锁" scheme="http://xiaolong.li/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/"/>
+    
+    
+      <category term="Distributed-lock" scheme="http://xiaolong.li/tags/Distributed-lock/"/>
+    
+      <category term="Redis" scheme="http://xiaolong.li/tags/Redis/"/>
+    
+      <category term="Redisson" scheme="http://xiaolong.li/tags/Redisson/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL 索引及优化技巧</title>
@@ -482,27 +508,6 @@
     
     
       <category term="zookeeper" scheme="http://xiaolong.li/tags/zookeeper/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Introduction-to-h264-frame</title>
-    <link href="http://xiaolong.li/2020/10/21/Introduction-to-h264-frame/"/>
-    <id>http://xiaolong.li/2020/10/21/Introduction-to-h264-frame/</id>
-    <published>2020-10-21T02:29:01.000Z</published>
-    <updated>2021-08-07T16:32:49.021Z</updated>
-    
-    <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;script src=&quot;/assets/js/APlayer.min.js&quot;&gt; &lt;/script&gt;
-      
-    
-    </summary>
-    
     
   </entry>
   
