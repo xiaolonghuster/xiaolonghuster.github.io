@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://xiaolong.li/2021/10/28/Introduction-to-Kafka/</loc>
+    
+    <lastmod>2021-11-10T16:11:47.144Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/11/10/Data-Consistency-Algorithm/</loc>
+    
+    <lastmod>2021-11-10T15:54:31.195Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2021/10/29/Introduction-to-RocketMQ/</loc>
+    
+    <lastmod>2021-10-29T01:19:07.079Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaolong.li/2021/10/18/Redisson-for-Distributed-lock/</loc>
     
     <lastmod>2021-10-18T12:09:12.672Z</lastmod>
@@ -177,14 +198,14 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2017/06/08/TSDB-Introduction/</loc>
+    <loc>http://xiaolong.li/2017/06/09/TSDB-INFLUXDB-Notion/</loc>
     
     <lastmod>2021-08-07T16:32:49.023Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2017/06/09/TSDB-INFLUXDB-Notion/</loc>
+    <loc>http://xiaolong.li/2017/06/08/TSDB-Introduction/</loc>
     
     <lastmod>2021-08-07T16:32:49.023Z</lastmod>
     
@@ -289,14 +310,14 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2020/02/13/Dockerfile-best-practices-for-golang-projects/</loc>
+    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
     
     <lastmod>2021-08-07T16:32:49.019Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
+    <loc>http://xiaolong.li/2020/02/13/Dockerfile-best-practices-for-golang-projects/</loc>
     
     <lastmod>2021-08-07T16:32:49.019Z</lastmod>
     
@@ -331,14 +352,14 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2019/10/01/ARTS-week-002/</loc>
+    <loc>http://xiaolong.li/2019/10/21/ARTS-week-003/</loc>
     
     <lastmod>2021-08-07T16:32:49.018Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2019/10/21/ARTS-week-003/</loc>
+    <loc>http://xiaolong.li/2019/10/01/ARTS-week-002/</loc>
     
     <lastmod>2021-08-07T16:32:49.018Z</lastmod>
     
@@ -366,13 +387,6 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/Project-Euler/about/index.html</loc>
-    
-    <lastmod>2021-08-07T16:32:49.017Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://xiaolong.li/Project-Euler/001/index.html</loc>
     
     <lastmod>2021-08-07T16:32:49.017Z</lastmod>
@@ -381,6 +395,13 @@
   
   <url>
     <loc>http://xiaolong.li/Project-Euler/002/index.html</loc>
+    
+    <lastmod>2021-08-07T16:32:49.017Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/Project-Euler/about/index.html</loc>
     
     <lastmod>2021-08-07T16:32:49.017Z</lastmod>
     

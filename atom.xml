@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiaolong.li/"/>
-  <updated>2021-10-18T12:09:12.672Z</updated>
+  <updated>2021-11-10T15:54:31.195Z</updated>
   <id>http://xiaolong.li/</id>
   
   <author>
@@ -15,6 +15,78 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数据一致性算法</title>
+    <link href="http://xiaolong.li/2021/11/10/Data-Consistency-Algorithm/"/>
+    <id>http://xiaolong.li/2021/11/10/Data-Consistency-Algorithm/</id>
+    <published>2021-11-10T15:53:13.000Z</published>
+    <updated>2021-11-10T15:54:31.195Z</updated>
+    
+    <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><p>Zab（Zookeeper 采用的一致性协议）、或 Paxos 算法来保证 kafka 副本的数据一致性，而是采用另一套 ISR 副本管理机制来保证数据一致性呢？</p><p>redis raft协议数据一致性</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;script src=&quot;/assets/js/APlayer.min.js&quot;&gt; &lt;/script&gt;&lt;p&gt;Zab（Zookeeper 采用的一致性协议）、或 Paxos 算法来保证 kafka 副本的数据一致性，而是采用另一套 ISR 副本管理机制来保证数据一致性呢？&lt;/p&gt;
+&lt;
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Introduction-to-RocketMQ</title>
+    <link href="http://xiaolong.li/2021/10/29/Introduction-to-RocketMQ/"/>
+    <id>http://xiaolong.li/2021/10/29/Introduction-to-RocketMQ/</id>
+    <published>2021-10-29T01:19:07.000Z</published>
+    <updated>2021-10-29T01:19:07.079Z</updated>
+    
+    <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;script src=&quot;/assets/js/APlayer.min.js&quot;&gt; &lt;/script&gt;
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka 核心架构机制总结</title>
+    <link href="http://xiaolong.li/2021/10/28/Introduction-to-Kafka/"/>
+    <id>http://xiaolong.li/2021/10/28/Introduction-to-Kafka/</id>
+    <published>2021-10-28T01:54:03.000Z</published>
+    <updated>2021-11-10T16:11:47.144Z</updated>
+    
+    <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><p>Kafka 是一个分布式流平台。是一种高吞吐量的分布式发布订阅消息系统。</p><p>消息中间件一般支持两种模式的队列：</p><blockquote><p>一是消息队列模式<br>二是发布订阅 (Pub-Sub) 模式</p></blockquote><p>Kafka 是发布订阅模式的轻量级消息系统、流平台。</p><p>这个系统需要满足如下三个特性：</p><ol><li>能够对流记录（每条消息）进行发布、订阅。</li><li>能够支持容错地持久化每一条流记录。（注：采用时间复杂度O(1)的磁盘存储结构，即使TB级别以上的数据也可以常数时间访问）</li><li>能够及实地处理每一条实时的流记录消息。</li></ol><a id="more"></a><h4 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h4><ol><li>Broker</li></ol><p>即代理服务器，kafka 部署在集群中的多台机器上，其中的每一台服务器即 Broker，它代表 kafka 的一个实例或节点，多个 Broker 构成一个 kafka 集群。</p><ol start="2"><li>Topic</li></ol><p>即话题，生产或消费流记录（消息），都需要指定特定的 Topic，一般将同一业务数据、同一类型数据写入同一 Topic。</p><ol start="3"><li>Partition</li></ol><p>即分区，因为一个 Topic 下可能会有大量的数据，一个 Broker 可能存不下，故一个 Topic 可以有多个分区，相当于把一个大流数据集分为多份，分别存在隶属于同一个 Topic 下的不同分区中。<br>（注：Topic 是逻辑概念，Partition 是物理概念，每个分区对应于一个物理文件夹，存储分区数据及索引文件）</p><ol start="4"><li>Producer</li></ol><p>即生产者，向 Broker 某一 Topic 主题发送数据的客户端。</p><ol start="5"><li>Consumer</li></ol><p>即消费者，消费指定 Topic 下的数据。</p><ol start="6"><li>Consumer Group</li></ol><p>即消费者组，每个 Consumer 隶属于某个特定的 Consumer Group，Producer 将一条消息发送给所有的 Consumer Group，但最终只能被 Consumer Group 下的唯一的一个 Consumer 消费。<br>（注：分组的目的是为了加快读取速度）</p><ol start="7"><li>Replication</li></ol><p>即副本，一个 Partition 分区可以有多个副本，存在不同的 Broker 中，提供容错保证。</p><h4 id="如何保证百万级写入速度"><a href="#如何保证百万级写入速度" class="headerlink" title="如何保证百万级写入速度"></a>如何保证百万级写入速度</h4><p>Kafka 底层的页缓存技术的使用，磁盘顺序写的思路，以及零拷贝技术的运用是做到每秒几十万的吞吐量的保证。</p><h5 id="页缓存技术-amp-磁盘顺序写（生产端）"><a href="#页缓存技术-amp-磁盘顺序写（生产端）" class="headerlink" title="页缓存技术 &amp; 磁盘顺序写（生产端）"></a>页缓存技术 &amp; 磁盘顺序写（生产端）</h5><p>由于 Kafka 每次接收到数据都会往磁盘上写，如果把数据基于磁盘来存储，频繁的往磁盘文件里写数据，那么无疑这个写操作的性能会非常差，无法达到百万级别的效率。</p><p>为了保证数据写入性能，Kafka 采取 <strong>基于操作系统的页缓存来实现文件写入</strong> 。操作系统本身有一层缓存，叫做 page cache，是在内存里的缓存，也可以称之为 os cache，意思就是操作系统自己管理的缓存。当写入磁盘文件的时候，可以直接写入 os cache 里，也就是仅仅写入内存中，接下来由操作系统自己决定什么时候把 os cache 里的数据真的刷入磁盘文件中。仅仅这一个步骤，就可以将磁盘文件写性能提升很多了，因为其实这里相当于是在写内存，不是在写磁盘。</p><p><img src="/images/kafka/2021-11-10-write-page-cache.png" alt="image" title="Kafka 消息写入机制"></p><p>还有一个保证 kafka 有百万级别写入数据的关键点是 <strong>磁盘顺序写</strong> 技术，仅仅将数据追加到文件的末尾，不是在文件的随机位置来修改数据。</p><p>所以 Kafka 在写数据的时候，基于以下两个方面实现写入数据的超高性能：</p><blockquote><ol><li><p>基于操作系统层面的 page cache 来写数据，所以性能很高，本质就是在写内存。</p></li><li><p>采用磁盘顺序写的方式，所以即使数据刷入磁盘的时候，性能也是极高的，和写内存是差不多的。</p></li></ol></blockquote><h5 id="零拷贝（消费端）"><a href="#零拷贝（消费端）" class="headerlink" title="零拷贝（消费端）"></a>零拷贝（消费端）</h5><p>Kafka 在消费数据的时候实际上就是要从磁盘文件里读取某条数据然后发送给下游的消费者，这里如果频繁的进行磁盘的读写操作，无疑性能也是级低的。</p><p>Kafka 为了解决这个问题，在读数据的时候是引入 <strong>零拷贝技术</strong>。</p><p>也就是直接让操作系统的 cache 中的数据发送到网卡后传输给下游的消费者，中间跳过了两次拷贝数据的步骤，Socket 缓存中仅仅会拷贝一个描述符过去，不会拷贝数据到 Socket 缓存。</p><p><img src="/images/kafka/2021-11-10-read-zero-copy.png" alt="image" title="Kafka 消息消费机制"></p><p>通过零拷贝技术，就不需要把 os cache 里的数据拷贝到应用缓存，再从应用缓存拷贝到 Socket 缓存了，两次拷贝都省略了，所以叫做零拷贝。</p><p>对 Socket 缓存仅仅就是拷贝数据的描述符过去，然后数据就直接从 os cache 中发送到网卡上去了，这个过程大大的提升了数据消费时读取文件数据的性能。</p><p>而且大家会注意到，在从磁盘读数据的时候，会先看看 os cache 内存中是否有，如果有的话，其实读数据都是直接读内存的。</p><p>如果kafka集群经过良好的调优，可以使得大量的数据都是直接写入 os cache 中，然后读数据的时候也是从 os cache 中读。</p><p>相当于是 Kafka 完全基于内存提供数据的读写操作，所以这个整体性能会极其的高。</p><h4 id="如何做到不丢失数据"><a href="#如何做到不丢失数据" class="headerlink" title="如何做到不丢失数据"></a>如何做到不丢失数据</h4><blockquote><ol><li>对kafka进行限速，平滑流量</li><li>启用重试机制，重试间隔时间设置长一些</li><li>Kafka 设置 acks=all，即需要相应的所有处于 ISR 的分区都确认收到该消息后，才算发送成功。</li></ol></blockquote><h5 id="Kafka-的-ISR-机制"><a href="#Kafka-的-ISR-机制" class="headerlink" title="Kafka 的 ISR 机制"></a>Kafka 的 ISR 机制</h5><p>ISR 机制是 Kafka 集群保证高可用的核心机制，这个机制简单来说，就是会自动给每个 Partition 维护一个 ISR 列表，这个列表里一定会有 Leader，然后还会包含跟 Leader 保持同步的 Follower。也就是说，只要 Leader 的某个 Follower 一直跟他保持数据同步，那么就会存在于 ISR 列表里。但是如果 Follower 因为自身发生一些问题，导致不能及时的从 Leader 同步数据过去，那么这个 Follower 就会被认为是 “out-of-sync”，被从 ISR 列表里踢出去。</p><blockquote><p>在做主备切换时，直接且只允许从 ISR 集合中选取将要转正的副本即可</p></blockquote><h5 id="核心关键点"><a href="#核心关键点" class="headerlink" title="核心关键点"></a>核心关键点</h5><ol><li>必须要求至少一个 Follower 在 ISR 列表里</li><li>每次写入数据的时候，要求 Leader 写入成功以外，至少保证 ISR 里有一个 Follower 也写成功</li></ol><h4 id="如何做到不重复消费"><a href="#如何做到不重复消费" class="headerlink" title="如何做到不重复消费"></a>如何做到不重复消费</h4><h4 id="高可用策略"><a href="#高可用策略" class="headerlink" title="高可用策略"></a>高可用策略</h4><p>kafka 使用 ISR 副本管理机制来保证其高可用性。首先需要明确 kafka 副本基本管理单位是 Partition 分区，如果我们指定了多个副本策略，则这些副本里只有一个为主副本（Leader），其他为次级副本 （Follower），所有读写均和主副本来响应。<br>ISR 具体运行机制是：将所有的次级副本（偶数）放到两个集合，其中一个集合被称为 ISR 集合，该集合里的数据始终与主节点数据保持一致，数据写入时，只有 ISR 集合中全部成功写入才算写入成功，在做主备切换时，直接且只允许从 ISR集合中选取将要转正的副本即可。</p><p>那么为何不采用 Zab（Zookeeper 采用的一致性协议）、或 Paxos 算法来保证 kafka 副本的数据一致性，而是采用另一套 ISR 副本管理机制来保证数据一致性呢？</p><p>原因其实很简单，因为在相同的副本容错条件下， ISR 机制可以维护更少的数据副本。比如 ISR 集合大小为 n+1（1主，n副，n为偶数），那么最多可以允许n个副本故障，而对于其他基于投票的一致性算法来说，则需要 2n + 1 个副本才能达到相同的容错性。</p><h4 id="选举规则"><a href="#选举规则" class="headerlink" title="选举规则"></a>选举规则</h4><p>Kafka 的 Leader 选举思路很简单，基于上述提到的 ISR 列表，当宕机后会从所有副本中顺序查找，如果查找到的副本在 ISR 列表中，则当选为 Leader。另外还要保证前任 Leader 已经是退位状态了，否则会出现脑裂情况（有两个 Leader ）。</p><h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ol><li>多少个副本才算够用？</li></ol><p>副本肯定越多越能保证Kafka的高可用，但越多的副本意味着网络、磁盘资源的消耗更多，性能会有所下降，通常来说副本数为3即可保证高可用，极端情况下将 replication-factor 参数调大即可。</p><ol start="2"><li>Follower 和 Leader 之间没有完全同步怎么办？</li></ol><p>Follower 和 Leader 之间并不是完全同步，但也不是完全异步，而是采用一种 ISR 机制（ In-Sync Replica）。每个 Leader 会动态维护一个 ISR 列表，该列表里存储的是和 Leader 基本同步的 Follower。如果有 Follower 由于网络、GC 等原因而没有向 Leader 发起拉取数据请求，此时 Follower 相对于 Leader 是不同步的，则会被踢出 ISR 列表。所以说，ISR 列表中的 Follower 都是跟得上 Leader 的副本。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Kafka 是一个分布式流平台。是一种高吞吐量的分布式发布订阅消息系统。&lt;/p&gt;
+&lt;p&gt;消息中间件一般支持两种模式的队列：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;一是消息队列模式&lt;br&gt;二是发布订阅 (Pub-Sub) 模式&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kafka 是发布订阅模式的轻量级消息系统、流平台。&lt;/p&gt;
+&lt;p&gt;这个系统需要满足如下三个特性：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;能够对流记录（每条消息）进行发布、订阅。&lt;/li&gt;
+&lt;li&gt;能够支持容错地持久化每一条流记录。（注：采用时间复杂度O(1)的磁盘存储结构，即使TB级别以上的数据也可以常数时间访问）&lt;/li&gt;
+&lt;li&gt;能够及实地处理每一条实时的流记录消息。&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>分布式锁的 Redisson 实现</title>
@@ -34,9 +106,9 @@
       <category term="分布式锁" scheme="http://xiaolong.li/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/"/>
     
     
-      <category term="Distributed-lock" scheme="http://xiaolong.li/tags/Distributed-lock/"/>
-    
       <category term="Redis" scheme="http://xiaolong.li/tags/Redis/"/>
+    
+      <category term="Distributed-lock" scheme="http://xiaolong.li/tags/Distributed-lock/"/>
     
       <category term="Redisson" scheme="http://xiaolong.li/tags/Redisson/"/>
     
@@ -111,9 +183,9 @@
       <category term="Redis" scheme="http://xiaolong.li/categories/Redis/"/>
     
     
-      <category term="redis" scheme="http://xiaolong.li/tags/redis/"/>
-    
       <category term="高可用" scheme="http://xiaolong.li/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
+    
+      <category term="redis" scheme="http://xiaolong.li/tags/redis/"/>
     
       <category term="哨兵" scheme="http://xiaolong.li/tags/%E5%93%A8%E5%85%B5/"/>
     
@@ -444,70 +516,6 @@
       <category term="反向代理" scheme="http://xiaolong.li/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"/>
     
       <category term="Nginx" scheme="http://xiaolong.li/tags/Nginx/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux国内各大源站</title>
-    <link href="http://xiaolong.li/2021/01/18/internal-linux-mirrors-website/"/>
-    <id>http://xiaolong.li/2021/01/18/internal-linux-mirrors-website/</id>
-    <published>2021-01-18T02:14:49.000Z</published>
-    <updated>2021-08-15T16:16:16.960Z</updated>
-    
-    <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><h5 id="企业源："><a href="#企业源：" class="headerlink" title="企业源："></a>企业源：</h5><p>阿里云开源镜像站： <a href="http://mirrors.aliyun.com/" target="_blank" rel="noopener">http://mirrors.aliyun.com/</a><br>搜狐开源镜像站：<a href="http://mirrors.sohu.com/" target="_blank" rel="noopener">http://mirrors.sohu.com/</a><br>网易开源镜像站：<a href="http://mirrors.163.com/" target="_blank" rel="noopener">http://mirrors.163.com/</a></p><a id="more"></a><h5 id="教育源："><a href="#教育源：" class="headerlink" title="教育源："></a>教育源：</h5><p>重庆大学：<br><a href="http://mirrors.cqu.edu.cn/" target="_blank" rel="noopener">http://mirrors.cqu.edu.cn/</a><br>北京理工大学：<br><a href="http://mirror.bit.edu.cn" target="_blank" rel="noopener">http://mirror.bit.edu.cn</a> (IPv4 only)<br><a href="http://mirror.bit6.edu.cn" target="_blank" rel="noopener">http://mirror.bit6.edu.cn</a> (IPv6 only)<br>北京交通大学：<br><a href="http://mirror.bjtu.edu.cn" target="_blank" rel="noopener">http://mirror.bjtu.edu.cn</a> (IPv4 only)<br><a href="http://mirror6.bjtu.edu.cn" target="_blank" rel="noopener">http://mirror6.bjtu.edu.cn</a> (IPv6 only)<br><a href="http://debian.bjtu.edu.cn" target="_blank" rel="noopener">http://debian.bjtu.edu.cn</a> (IPv4+IPv6)<br>兰州大学：<a href="http://mirror.lzu.edu.cn/" target="_blank" rel="noopener">http://mirror.lzu.edu.cn/</a><br>厦门大学：<a href="http://mirrors.xmu.edu.cn/" target="_blank" rel="noopener">http://mirrors.xmu.edu.cn/</a><br>上海交通大学：<br><a href="http://ftp.sjtu.edu.cn/" target="_blank" rel="noopener">http://ftp.sjtu.edu.cn/</a> (IPv4 only)<br><a href="http://ftp6.sjtu.edu.cn" target="_blank" rel="noopener">http://ftp6.sjtu.edu.cn</a> (IPv6 only)<br>清华大学：<br><a href="http://mirrors.tuna.tsinghua.edu.cn/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/</a> (IPv4+IPv6)<br><a href="http://mirrors.6.tuna.tsinghua.edu.cn/" target="_blank" rel="noopener">http://mirrors.6.tuna.tsinghua.edu.cn/</a> (IPv6 only)<br><a href="http://mirrors.4.tuna.tsinghua.edu.cn/" target="_blank" rel="noopener">http://mirrors.4.tuna.tsinghua.edu.cn/</a> (IPv4 only)<br>天津大学：<a href="http://mirror.tju.edu.cn/" target="_blank" rel="noopener">http://mirror.tju.edu.cn/</a><br>中国科学技术大学：<br><a href="http://mirrors.ustc.edu.cn/" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/</a> (IPv4+IPv6)<br><a href="http://mirrors4.ustc.edu.cn/" target="_blank" rel="noopener">http://mirrors4.ustc.edu.cn/</a><br><a href="http://mirrors6.ustc.edu.cn/" target="_blank" rel="noopener">http://mirrors6.ustc.edu.cn/</a><br>西南大学：<a href="http://linux.swu.edu.cn/swudownload/Distributions/" target="_blank" rel="noopener">http://linux.swu.edu.cn/swudownload/Distributions/</a><br>东北大学：<br><a href="http://mirror.neu.edu.cn/" target="_blank" rel="noopener">http://mirror.neu.edu.cn/</a> (IPv4 only)<br><a href="http://mirror.neu6.edu.cn/" target="_blank" rel="noopener">http://mirror.neu6.edu.cn/</a> (IPv6 only)<br>电子科技大学：<a href="http://ubuntu.uestc.edu.cn/" target="_blank" rel="noopener">http://ubuntu.uestc.edu.cn/</a><br>青岛大学：<a href="http://mirror.qdu.edu.cn/" target="_blank" rel="noopener">http://mirror.qdu.edu.cn/</a><br>开源中国社区 <a href="http://mirrors.oss.org.cn/" target="_blank" rel="noopener">http://mirrors.oss.org.cn/</a><br>大连东软信息学院 <a href="http://mirrors.neusoft.edu.cn/" target="_blank" rel="noopener">http://mirrors.neusoft.edu.cn/</a><br>华中科技大学 <a href="http://mirrors.hust.edu.cn/" target="_blank" rel="noopener">http://mirrors.hust.edu.cn/</a><br>中山大学 <a href="http://mirrors.sysu.edu.cn/" target="_blank" rel="noopener">http://mirrors.sysu.edu.cn/</a><br>清华大学学生网管会 <a href="http://mirrors.tuna.tsinghua.edu.cn/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/</a><br>浙江大学 <a href="http://mirrors.zju.edu.cn/web/" target="_blank" rel="noopener">http://mirrors.zju.edu.cn/web/</a></p><p>台湾淡江大学 <a href="http://ftp.tku.edu.tw/Linux/" target="_blank" rel="noopener">http://ftp.tku.edu.tw/Linux/</a></p><p>Linux运维派开源镜像 <a href="http://mirrors.skyshe.cn/" target="_blank" rel="noopener">http://mirrors.skyshe.cn/</a></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h5 id=&quot;企业源：&quot;&gt;&lt;a href=&quot;#企业源：&quot; class=&quot;headerlink&quot; title=&quot;企业源：&quot;&gt;&lt;/a&gt;企业源：&lt;/h5&gt;&lt;p&gt;阿里云开源镜像站： &lt;a href=&quot;http://mirrors.aliyun.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://mirrors.aliyun.com/&lt;/a&gt;&lt;br&gt;搜狐开源镜像站：&lt;a href=&quot;http://mirrors.sohu.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://mirrors.sohu.com/&lt;/a&gt;&lt;br&gt;网易开源镜像站：&lt;a href=&quot;http://mirrors.163.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://mirrors.163.com/&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka-Cluster-building</title>
-    <link href="http://xiaolong.li/2020/11/11/Kafka-Cluster-building/"/>
-    <id>http://xiaolong.li/2020/11/11/Kafka-Cluster-building/</id>
-    <published>2020-11-11T11:06:08.000Z</published>
-    <updated>2021-08-07T16:32:49.021Z</updated>
-    
-    <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><p><a href="https://cloud.tencent.com/developer/article/1023898" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1023898</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;script src=&quot;/assets/js/APlayer.min.js&quot;&gt; &lt;/script&gt;&lt;p&gt;&lt;a href=&quot;https://cloud.tencent.com/developer/article/1023898&quot; target=&quot;_blank&quot; rel=&quot;noop
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>zookeeper集群搭建</title>
-    <link href="http://xiaolong.li/2020/11/11/Zookeeper-Cluster-building/"/>
-    <id>http://xiaolong.li/2020/11/11/Zookeeper-Cluster-building/</id>
-    <published>2020-11-11T11:05:30.000Z</published>
-    <updated>2021-08-07T16:32:49.024Z</updated>
-    
-    <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><h4 id="为什么-zookeeper-集群的节点数是奇数"><a href="#为什么-zookeeper-集群的节点数是奇数" class="headerlink" title="为什么 zookeeper 集群的节点数是奇数"></a>为什么 zookeeper 集群的节点数是奇数</h4><p>zookeeper 集群通常是用来对用户的分布式应用程序提供协调服务的，为了保证数据的一致性，对 zookeeper 集群进行了这样三种角色划分：leader、follower、observer分别对应着主、从、观察者。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">leader : 负责进行投票的发起和决议，更新系统状态。</span><br><span class="line">follower : 用于接收客户端请求并向客户端返回结果以及在选举过程中参与投票。</span><br><span class="line">observer : 通常是针对于查询操作做负载的。 observer 与 follower 节点最大的不同在于 observer 没有投票权，在客户端发起的增删改操中， leader 节点是不会把消息传递给 observer 让其投票的。但是查询操作跟 follower 一样，客户端的查询到了 observer 节点， observer 节点会去访问 leader 节点取最新的数据然后返回给客户端。</span><br></pre></td></tr></table></figure><p>集群可以保证在每台机器数据保持一致的情况下，客户端每次发起的查询操作，集群节点都能返回同样的结果。但是对于客户端发起的增、删、改等能改变数据的操作，如果集群中的多台机器各自修改数据，那么就无法保证数据的一致性。</p><p>那么，对于增、删、改操作， zookeeper 集群规定只有 leader 节点才有权利去执行修改数据的操作，而 follower 节点即使接收到客户端发起的数据修改操作，也要将其转交给 leader 来处理， leader节点接收到修改数据的请求后，会向所有 follower 节点广播一条消息，让其执行操作， follower 节点执行完后，需要向 leader 节点回复执行结果。当 leader 节点收到半数以上的 follower 节点的确认消息后，便会判定该操作执行完毕，然后向所有 follower 节点广播该操作已经生效。</p><p>所以在 zookeeper 集群中， leader 节点是不可缺少的， leader 节点也是由所有 follower 节点选举产生，而且只有一个。</p><p>//todo leader节点选取逻辑</p><blockquote><p>zookeeper 集群中 leader 的选取逻辑，要求 <strong>可用节点数量</strong> &gt; <strong>总节点数量 / 2</strong>，注意，这里是 <strong>&gt;</strong> ,并非 <strong>&gt;=</strong> 。 </p></blockquote><p>为什么集群节点数量要奇数个，主要从以下两个方面考虑。</p><h5 id="防脑裂导致集群不可用"><a href="#防脑裂导致集群不可用" class="headerlink" title="防脑裂导致集群不可用"></a>防脑裂导致集群不可用</h5><p>在一个 zookeeper 集群中，可以有多个 follower 和 observe 节点，但是有且只能有一个 leader 节点。如果 leader 节点不可用或者宕机，剩下的所有节点机器会投票产生新的 leader 节点。</p><p>集群脑裂: 一个集群由于网络不通或者其他原因分裂成多个小集群的现象。</p><h5 id="容错率和成本控制"><a href="#容错率和成本控制" class="headerlink" title="容错率和成本控制"></a>容错率和成本控制</h5><p><a href="https://www.cnblogs.com/lishiqi-blog/p/12314111.html" target="_blank" rel="noopener">https://www.cnblogs.com/lishiqi-blog/p/12314111.html</a></p><p><a href="https://www.cnblogs.com/ysocean/p/9860529.html" target="_blank" rel="noopener">https://www.cnblogs.com/ysocean/p/9860529.html</a></p><p><a href="https://blog.csdn.net/jiangxiulilinux/article/details/96433560" target="_blank" rel="noopener">https://blog.csdn.net/jiangxiulilinux/article/details/96433560</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;script src=&quot;/assets/js/APlayer.min.js&quot;&gt; &lt;/script&gt;&lt;h4 id=&quot;为什么-zookeeper-集群的节点数是奇数&quot;&gt;&lt;a href=&quot;#为什么-zookeeper-集群的节点数是奇数&quot; class=&quot;headerlink&quot; tit
-      
-    
-    </summary>
-    
-      <category term="教程" scheme="http://xiaolong.li/categories/%E6%95%99%E7%A8%8B/"/>
-    
-    
-      <category term="zookeeper" scheme="http://xiaolong.li/tags/zookeeper/"/>
     
   </entry>
   
