@@ -94,7 +94,7 @@
 <meta property="og:image" content="http://xiaolong.li/images/raft/2021-11-14-init-vote.jpg">
 <meta property="og:image" content="http://xiaolong.li/images/raft/2021-11-14-vote-term.jpg">
 <meta property="og:image" content="http://xiaolong.li/images/raft/2021-11-14-node-log.jpg">
-<meta property="og:updated_time" content="2021-11-14T15:20:18.070Z">
+<meta property="og:updated_time" content="2021-11-14T15:28:50.315Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式系统的 Raft 算法">
 <meta name="twitter:description" content="Raft 算法是一个共识的算法，在集群的分布式状态中，保证每个节点都处于一致的状态。 Raft 算法主要可以分为两个阶段：   领导者选举阶段 日志复制(数据同步)阶段">
@@ -467,6 +467,12 @@ daovoice('update');
 </ol>
 </blockquote>
 <a id="more"></a>
+<blockquote>
+<p><a href="https://www.infoq.cn/article/raft-paper/" target="_blank" rel="noopener">Raft 具体实现可以参照论文翻译版</a></p>
+</blockquote>
+<blockquote>
+<p><a href="http://thesecretlivesofdata.com/raft/" target="_blank" rel="noopener">Raft 演示动画</a></p>
+</blockquote>
 <p>Raft 算法中的服务器节点只有 3 种状态，<strong>Leader（领导人）</strong>，<strong>Follower（跟随者）</strong>，<strong>Candidate（候选人）</strong>。</p>
 <ol>
 <li>Leader（领导者）：接受客户端的读、写请求，协调整个日志的持久化和推进</li>
