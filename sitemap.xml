@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://xiaolong.li/2021/11/14/Introduction-to-Raft/</loc>
+    
+    <lastmod>2021-11-14T15:20:18.070Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaolong.li/2021/11/10/Data-Consistency-Algorithm/</loc>
     
     <lastmod>2021-11-11T08:37:36.773Z</lastmod>
@@ -205,6 +212,13 @@
   </url>
   
   <url>
+    <loc>http://xiaolong.li/2017/06/09/TSDB-INFLUXDB-Notion/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.023Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaolong.li/2018/03/26/You-Do-Not-Know-Java_Integer/</loc>
     
     <lastmod>2021-08-07T16:32:49.023Z</lastmod>
@@ -213,13 +227,6 @@
   
   <url>
     <loc>http://xiaolong.li/2018/03/27/You-Do-Not-Know-Java_String-Stringbuffer-StringBuilder/</loc>
-    
-    <lastmod>2021-08-07T16:32:49.023Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaolong.li/2017/06/09/TSDB-INFLUXDB-Notion/</loc>
     
     <lastmod>2021-08-07T16:32:49.023Z</lastmod>
     
@@ -261,13 +268,6 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2020/11/11/Kafka-Cluster-building/</loc>
-    
-    <lastmod>2021-08-07T16:32:49.021Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://xiaolong.li/2019/09/18/Linux-cmd-fdisk/</loc>
     
     <lastmod>2021-08-07T16:32:49.021Z</lastmod>
@@ -276,6 +276,13 @@
   
   <url>
     <loc>http://xiaolong.li/2019/09/19/Mac-rm-cmd/</loc>
+    
+    <lastmod>2021-08-07T16:32:49.021Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaolong.li/2020/11/11/Kafka-Cluster-building/</loc>
     
     <lastmod>2021-08-07T16:32:49.021Z</lastmod>
     
@@ -310,14 +317,14 @@
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2020/02/13/Dockerfile-best-practices-for-golang-projects/</loc>
+    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
     
     <lastmod>2021-08-07T16:32:49.019Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://xiaolong.li/2019/12/05/Developer-Guide-for-Golang/</loc>
+    <loc>http://xiaolong.li/2020/02/13/Dockerfile-best-practices-for-golang-projects/</loc>
     
     <lastmod>2021-08-07T16:32:49.019Z</lastmod>
     

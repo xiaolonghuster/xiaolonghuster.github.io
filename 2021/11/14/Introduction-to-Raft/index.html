@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Raft,选举,数据同步,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="NO WAY OUT | 无往不前" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="Raft 算法是一个共识的算法，在集群的分布式状态中，保证每个节点都处于一致的状态。 Raft 算法主要可以分为两个阶段：   领导者选举阶段 日志复制(数据同步)阶段">
+<meta name="keywords" content="Raft,选举,数据同步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式系统的 Raft 算法">
+<meta property="og:url" content="http://xiaolong.li/2021/11/14/Introduction-to-Raft/index.html">
+<meta property="og:site_name" content="NO WAY OUT | 无往不前">
+<meta property="og:description" content="Raft 算法是一个共识的算法，在集群的分布式状态中，保证每个节点都处于一致的状态。 Raft 算法主要可以分为两个阶段：   领导者选举阶段 日志复制(数据同步)阶段">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaolong.li/images/raft/2021-11-14-leader-election.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/raft/2021-11-14-term.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/raft/2021-11-14-init-vote.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/raft/2021-11-14-vote-term.jpg">
+<meta property="og:image" content="http://xiaolong.li/images/raft/2021-11-14-node-log.jpg">
+<meta property="og:updated_time" content="2021-11-14T15:20:18.070Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式系统的 Raft 算法">
+<meta name="twitter:description" content="Raft 算法是一个共识的算法，在集群的分布式状态中，保证每个节点都处于一致的状态。 Raft 算法主要可以分为两个阶段：   领导者选举阶段 日志复制(数据同步)阶段">
+<meta name="twitter:image" content="http://xiaolong.li/images/raft/2021-11-14-leader-election.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '9QLYL7CCNL',
+      apiKey: 'f7b17f40c7427dbfcb27501b7ed5f4ef',
+      indexName: 'xiaolong_li',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"请输出关键信息","hits_empty":"未发现与 <strong>${query}</strong> 相关的文章","hits_stats":"${hits} 条结果被找到,耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://xiaolong.li/2021/11/14/Introduction-to-Raft/">
+
+
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0875bb23.js","daovoice")
+daovoice('init', {
+  app_id: "0875bb23",
+  user_id: "NO_89757", // 必填: 该用户在您系统上的唯一ID
+  email: "xiaolonghuster@gmail.com", // 选填:  该用户在您系统上的主邮箱
+  name: "xiaolong", // 选填: 用户名
+  signed_up: 1449821660 // 选填: 用户的注册时间，用Unix时间戳表示
+});
+daovoice('update');
+</script>
+
+  <title>分布式系统的 Raft 算法 | NO WAY OUT | 无往不前</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <!-- <div style="float: right;">
+      <a href="https://github.com/xiaolonghuster" target="_blank"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    </div> -->
+
+    <a href="https://github.com/xiaolonghuster" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NO WAY OUT | 无往不前</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projecteuler">
+          <a href="/Project-Euler" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br>
+            
+            欧拉计划
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-artsnotes">
+          <a href="/ARTS-Notes" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-paper-plane"></i> <br>
+            
+            ARTS计划
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xiaolong.li/2021/11/14/Introduction-to-Raft/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xiaolong">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/44128669">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NO WAY OUT | 无往不前">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分布式系统的 Raft 算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-11-14T21:05:46+08:00">
+                2021-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据一致性/" itemprop="url" rel="index">
+                    <span itemprop="name">数据一致性</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/11/14/Introduction-to-Raft/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2021/11/14/Introduction-to-Raft/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2021/11/14/Introduction-to-Raft/" class="leancloud_visitors" data-flag-title="分布式系统的 Raft 算法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="/assets/js/APlayer.min.js"> </script><p>Raft 算法是一个共识的算法，在集群的分布式状态中，保证每个节点都处于一致的状态。</p>
+<p>Raft 算法主要可以分为两个阶段：</p>
+<blockquote>
+<ol>
+<li>领导者选举阶段</li>
+<li>日志复制(数据同步)阶段</li>
+</ol>
+</blockquote>
+<a id="more"></a>
+<p>Raft 算法中的服务器节点只有 3 种状态，<strong>Leader（领导人）</strong>，<strong>Follower（跟随者）</strong>，<strong>Candidate（候选人）</strong>。</p>
+<ol>
+<li>Leader（领导者）：接受客户端的读、写请求，协调整个日志的持久化和推进</li>
+<li>Follower（跟随者）：系统启动时默认的角色，一般来说不参与客户端读、写请求，接受 Leader 发送过来的心跳追加日志，在 Leader 挂了之后转变为 Candidate</li>
+<li>Candidate（候选者）：如果当前没有 Leader，Follower 就转变为这个角色，这个角色会向其它节点发起投票请求，如果多数节点同意投票，则晋升为 Leader</li>
+</ol>
+<p>Leader 负责管理集群中的日志复制，在大多数时候 Candidate 这个状态是不存在的，只有当集群中没有 Leader 的时候其他节点才会产生 Candidate，然后 Candidate 会要求其他节点进行投票，获得大多数票数的节点就变为新的 Leader，其他所有节点的状态变为 Follower。</p>
+<p>当客户端有请求进来，Leader 负责接收和处理，并且也只有 Leader 有资格进行这种操作，每一个服务器节点都在维护一个日志。假设客户端发送过来的是一个 add 请求，往服务器添加了一个数据，Leader 会更新它的日志，然后通过 AppendEntries 消息让 Follower 同步这个更新，Leader 会记录 Follower 返回成功的数目，如果超过半数的节点都成功了，Leader 才会通知客户端已经成功 add 了，并且 Leader 会进行日志提交的操作，并且让其他的服务器节点也进行提交。</p>
+<h4 id="Leader-选举机制"><a href="#Leader-选举机制" class="headerlink" title="Leader 选举机制"></a>Leader 选举机制</h4><p><img src="/images/raft/2021-11-14-leader-election.jpg" alt="image" title="Leader 选举"></p>
+<p>可以看出所有节点启动时都是 Follower 状态；在一段时间内如果没有收到来自 Leader 的心跳，从 Follower 切换到 Candidate，发起选举；如果收到超过一半的赞同票（含自己的一票）则切换到 Leader 状态；如果发现其他节点比自己更新，则主动切换到 Follower。<br>总之，系统中最多只有一个 Leader，如果在一段时间里发现没有 Leader，则大家通过选举-投票选出 Leader。Leader 会不停的给 Follower 发心跳消息，表明自己的存活状态。如果 Leader 故障，那么 Follower 会转换成 Candidate，重新选出 Leader。</p>
+<h5 id="任期-Term"><a href="#任期-Term" class="headerlink" title="任期 - Term"></a>任期 - Term</h5><p>从上面可以看出，Leader 是大家投票选举出来的，每个 Leader 工作一段时间，然后选出新的 Leader 继续负责。在raft协议中，对应的术语叫 term（任期）。</p>
+<p><img src="/images/raft/2021-11-14-term.jpg" alt="image" title="任期"></p>
+<p>term（任期）以选举（election）开始，然后就是一段或长或短的稳定工作期（normal Operation）。从上图可以看到，任期是递增的，这就充当了逻辑时钟的作用；另外，term 3 任期期间没有 Leader，就是说没有选举出 Leader 就结束了，然后会发起新的选举，后面会解释这种 split vote 的情况。</p>
+<h5 id="选举过程详解"><a href="#选举过程详解" class="headerlink" title="选举过程详解"></a>选举过程详解</h5><p><img src="/images/raft/2021-11-14-init-vote.jpg" alt="image" title="初始投票"></p>
+<p>每个节点会维护一个 Term 值，即为当前是第几任领导，初始启动时是第 0 任，每个节点都会随机给一个 TIMEOUT 值，一般在 150ms 到 300ms 之间。当 TIMEOUT 值到达后，还没有收到 Leader 的心跳检测。首先变成 Candidate 的是 TIMEOUT 值先结束的节点，上图为节点 A（TIMEOUT 值是随机的），然后变成 Candidate 后首先会先将自己的 Term + 1，并且先给自己投一票，然后向其他节点发送信息，要求他们进行投票，其他节点会对比自己的 Term 值和被选举者的 Term ，如果小于 被选举者传过来的 Term，则同意其成为 Leader，并将自己的 Term 更新。投票的数量占据所有节点总数一半以上即变为 Leader，如果 A 节点成功变为了 Leader，那么它会向其他节点按一定频率发送心跳检测，如果其他节点发现发送心跳检测的 A 节点的 Term 是大于或者等于当前它节点维护的 Term 的，他就会更新 Term 并且成为 A 的追随者。</p>
+<p>上面已经说过，如果 Follower 在 election timeout 内没有收到来自 Leader 的心跳（也许此时还没有选出 Leader；也许leader挂了；也许 Leader 与该 Follower 之间网络故障），则会主动发起选举。步骤如下：</p>
+<ol>
+<li>增加节点本地的 current term ，切换到candidate状态</li>
+<li>投自己一票</li>
+<li>并行给其他节点发送 RequestVote RPCs</li>
+<li>等待其他节点的回复</li>
+</ol>
+<p>在这个过程中，根据来自其他节点的消息，可能出现三种结果</p>
+<ol>
+<li>收到大多数的同意投票（含自己的一票），则赢得选举，成为 Leader</li>
+<li>被告知别人已当选，那么自行切换到 Follower</li>
+<li>一段时间内没有收到大多数的同意投票，则保持 Candidate 状态，重新发出选举</li>
+</ol>
+<blockquote>
+<p>第一种情况，赢得了选举之后，新的 Leader 会立刻给所有节点发消息，广而告之，避免其余节点触发新的选举。在这里，先回到投票者的视角，投票者如何决定是否给一个选举请求投票，有以下约束：</p>
+</blockquote>
+<ol>
+<li>在任一任期内，单个节点最多只能投一票</li>
+<li>候选人知道的信息不能比自己的少</li>
+<li>first-come-first-served 先来先得</li>
+</ol>
+<blockquote>
+<p>第二种情况，比如有三个节点A B C。A B 同时发起选举，而 A 的选举消息先到达 C，C 给 A 投了一票，当 B 的消息到达 C 时，已经不能满足上面提到的第一个约束，即 C 不会给 B 投票，而 A 和 B 显然都不会给对方投票。A 胜出之后，会给 B,C 发心跳消息，节点 B 发现节点 A 的 term 不低于自己的 term，知道有已经有 Leader 了，于是转换成 Follower。</p>
+</blockquote>
+<blockquote>
+<p>第三种情况，没有任何节点获得大多数节点投票，比如下图这种情况：</p>
+</blockquote>
+<p><img src="/images/raft/2021-11-14-vote-term.jpg" alt="image" title="初始投票"></p>
+<p>总共有四个节点，Node C、Node D 同时成为了 Candidate，进入了term 4，但 Node A 投了 Node D 一票，Node B 投了 Node C 一票，这就出现了平票 split vote 的情况。这个时候所有节点会一直等，直到超时后重新发起选举。如果出现平票的情况，那么就延长了系统不可用的时间（没有 Leader 是不能处理客户端写请求的），因此 raft 引入了 randomized election timeouts 来尽量避免平票情况。同时，leader-based 共识算法中，节点的数目都是奇数个，尽量保证大多数节点的出现。</p>
+<p>关于选举还有其它一些规则：</p>
+<ol>
+<li>针对 Follower</li>
+</ol>
+<p>如果在超过选举超时时间的情况之前都没有收到 Leader 的心跳，或者是 Candidate 请求投票的，就自己变成 Candidate;</p>
+<ol start="2">
+<li>针对 Candidate</li>
+</ol>
+<p>开始选举后的动作如下：自增当前的任期号（current Term）; 给自己投票; 重置选举超时计时器;发送请求投票的 RPC 给其他所有服务器;<br>收到响应后的规则：如果接收到大多数服务器的选票，那么就变成 Leader；如果接收到来自新的 Leader 的心跳信息，则转变成 Leader；如果选举过程超时，再次发起一轮选举; </p>
+<ol start="3">
+<li>针对 Leader</li>
+</ol>
+<p>一旦成为 Leader：发送空的附加日志 RPC（心跳）给其他所有的服务器；在一定的空余时间之后不停的重复发送，以阻止跟随者超时。</p>
+<h4 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h4><p>当有了 Leader，系统应该进入对外工作期了。客户端的一切请求来发送到 Leader，Leader 来调度这些并发请求的顺序，并且保证 Leader 与 Followers 状态的一致性。raft 中的做法是，将这些请求以及执行顺序告知 Followers。Leader 和 Followers 以相同的顺序来执行这些请求，保证状态一致。</p>
+<h5 id="复制状态机"><a href="#复制状态机" class="headerlink" title="复制状态机"></a>复制状态机</h5><h5 id="请求完整流程"><a href="#请求完整流程" class="headerlink" title="请求完整流程"></a>请求完整流程</h5><p>当系统（Leader）收到一个来自客户端的写请求，到返回给客户端，整个过程从 Leader 的视角来看会经历以下步骤：</p>
+<ol>
+<li>leader append log entry</li>
+<li>leader issue AppendEntries RPC in parallel</li>
+<li>leader wait for majority response</li>
+<li>leader apply entry to state machine</li>
+<li>leader reply to client</li>
+<li>leader notify follower apply log</li>
+</ol>
+<p>可以看到日志的提交过程有点类似两阶段提交 (2PC)，不过与 2PC 的区别在于，Leader 只需要大多数（majority）节点的回复即可，这样只要超过一半节点处于工作状态则系统就是可用的。</p>
+<p>日志在每个节点上是状态如下图：</p>
+<p><img src="/images/raft/2021-11-14-node-log.jpg" alt="image" title="节点日志状态"></p>
+<h5 id="特殊状态下的复制"><a href="#特殊状态下的复制" class="headerlink" title="特殊状态下的复制"></a>特殊状态下的复制</h5><p>正常来说客户端一个请求过来，领导者接收，更新日志，然后通知其他节点进行更新，接收到大多数成功的信息后，就告诉客户端成功，提交日志，让其他节点也提交日志。再看看比较特殊或者极端的情况。</p>
+<blockquote>
+<p>特殊情况1：假设现在有A,B,C三个节点，领导者A接收了一个add请求，现在自己日志add了，然后发送信息让节点B和C也add到日志了。这个时候领导者A宕机了，也就是说接收不到其他节点的成功信息，不能进行commit操作，那咋办？这个add操作还有效吗？现在B的TIMEOUT时间为150ms，C的TIMEOUT时间为160ms，所以B先变成候选人发起投票，C给B投票（如果在请求达到C之前，C也变成候选人，就等待下一次选举呗，先TIMEOUT的再次Term + 1，这里假设C还没有变为候选人），B变为了领导者，这个时候B和C都存在有下标未更新的日志8（如上图），但是Raft算法要求领导者不能删除或者覆盖自己的日志文件，所以新领导者B是不会删除下标未更新的日志8，并且会履行原来A的职责让追随者们更新日志8，但不会进行commit操作，只有在下一次客户端请求进来对日志进行操作时，让追随者们更新日志9，领导者B得到大多数的成功信息后，才会把两个日志都进行一个commit操作。</p>
+</blockquote>
+<blockquote>
+<p>特殊情况2：现在有A,B,C三个节点，领导者A接收了一个add请求，现在自己日志add了，然后发送信息让节点B进行更新，还没对节点C发送，这个时候领导者A挂了咋办？如果这时候还是C先到了过期时间，C向B发送了投票请求会发生什么？因为Raft算法要求新的领导者需要更具有完整性的日志，所以会拒绝向C进行投票，会等待下一次B自己选举的时候向C发送投票请求。</p>
+</blockquote>
+<blockquote>
+<p>特殊情况3：如果有A,B,C,D,E五个节点，A为领导者，接收了一个请求，让B更新了，还没有让C,D,E更新就宕机了，这个时候还是C先TIMEOUT了，会发生什么？这个和特殊情况2有什么不同？特殊情况2的时候A和B是已经存在有日志更新了，占据了绝大多数；但是在特殊情况3更新日志的情况只是占据少数，如果这个时候让没有更新日志的C来发起投票，那么C,D,E都会投给C，而B会拒绝投给C，但是C也拿到了绝大多数的票数，所以当选领导者，并且会检查其他节点的日志是否是最新的了，发现B存在它没有的日志，领导者首先不会去理会，在下一次进行更新的时候，因为会维护一个日志的index，并且是按照领导者index来执行，所以B更新的日志会被覆盖。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">----------本文结束<i class="fa fa-paw"></i>感谢您的阅读----------</div>
+    
+</div>
+
+      </div>
+    
+
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/third_part/wechat_qrcode_for_yileshuo.jpg" alt="xiaolong wechat" style="width: 200px; max-width: 100%;">
+    <div>一只程序猿对世界的不完全理解</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Raft/" rel="tag"># Raft</a>
+          
+            <a href="/tags/选举/" rel="tag"># 选举</a>
+          
+            <a href="/tags/数据同步/" rel="tag"># 数据同步</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/10/Data-Consistency-Algorithm/" rel="next" title="数据一致性算法">
+                <i class="fa fa-chevron-left"></i> 数据一致性算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+<div class="addthis_inline_share_toolbox">
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d917cdcae8a3a18" async="async"></script>
+</div>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars0.githubusercontent.com/u/44128669" alt="xiaolong">
+            
+              <p class="site-author-name" itemprop="name">xiaolong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaolonghuster" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://twitter.com/xiaolonghuster" target="_blank" title="Twitter">
+                      
+                        <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://weibo.com/645582316" target="_blank" title="weibo">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="http://www.linkedin.com/in/xiaolong-li-981b27a1" target="_blank" title="LinkedIn">
+                      
+                        <i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Leader-选举机制"><span class="nav-number">1.</span> <span class="nav-text">Leader 选举机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#任期-Term"><span class="nav-number">1.1.</span> <span class="nav-text">任期 - Term</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#选举过程详解"><span class="nav-number">1.2.</span> <span class="nav-text">选举过程详解</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#日志复制"><span class="nav-number">2.</span> <span class="nav-text">日志复制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#复制状态机"><span class="nav-number">2.1.</span> <span class="nav-text">复制状态机</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#请求完整流程"><span class="nav-number">2.2.</span> <span class="nav-text">请求完整流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#特殊状态下的复制"><span class="nav-number">2.3.</span> <span class="nav-text">特殊状态下的复制</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xiaolong</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+    <span class="site-pv">
+      <div class="stats_pv">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      </div>since 2017
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: true,
+        appId: 'r3Vg3NWJQ3TT7fQTlMtLeAEl-gzGzoHsz',
+        appKey: '2FLLPxOmf1rxuj3BBnsYDGMx',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("r3Vg3NWJQ3TT7fQTlMtLeAEl-gzGzoHsz", "2FLLPxOmf1rxuj3BBnsYDGMx");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
