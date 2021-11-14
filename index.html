@@ -432,6 +432,7 @@ daovoice('update');
           
             <script src="/assets/js/APlayer.min.js"> </script><p>Zab（Zookeeper 采用的一致性协议）、或 Paxos 算法来保证 kafka 副本的数据一致性，而是采用另一套 ISR 副本管理机制来保证数据一致性呢？</p>
 <p>redis raft协议数据一致性</p>
+<h4 id="Zab-协议-广播模式"><a href="#Zab-协议-广播模式" class="headerlink" title="Zab 协议 - 广播模式"></a>Zab 协议 - 广播模式</h4><p>客户端每发送一个更新请求，ZooKeeper 都会生成一个全局唯一的递增编号，这个编号反映了所有事务操作的先后顺序，这个唯一编号就是事务 ID(ZXID)，只有更新请求才算是事务请求。<br>为保证按照事务的 ZXID 先后顺序来处理，Leader服务器会分别为每个 Follower 服务器创建一个队列，并将事务的先后顺序放入队列中，并按照 FIFO 的策略进行消息发送。收到需要处理的事务后，Follower 服务器会首先以事务日志的形式写入服务器的磁盘中，写入成功后会向 Leader 服务器发送 ACK 响应。当 Leader 服务器收到超过一半的 Follower 服务器的 ACK 响应后，会向所有 Follower 服务器广播 Commit 消息，收到 Commit 消息的 Follower 服务器也会完成对事务的提交。<br>如果接收到事务请求的是 Follower 服务器，它会将请求转发给 Leader 服务器处理。</p>
 
           
         
