@@ -183,9 +183,9 @@
       <category term="Redis" scheme="http://xiaolong.li/categories/Redis/"/>
     
     
-      <category term="高可用" scheme="http://xiaolong.li/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
-    
       <category term="redis" scheme="http://xiaolong.li/tags/redis/"/>
+    
+      <category term="高可用" scheme="http://xiaolong.li/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
     
       <category term="哨兵" scheme="http://xiaolong.li/tags/%E5%93%A8%E5%85%B5/"/>
     
